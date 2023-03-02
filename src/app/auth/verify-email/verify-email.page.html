@@ -1,0 +1,20 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>
+      Verificación de correo
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-grid>
+    <ion-row>
+      <p>
+        Por favor revisa tu correo electronico y verifica tu correo haciendo click en el link.
+      </p>
+      <ion-button type="submit" (click)="authService.SendVerificationMail()" expand="block">
+        Reenviar Verificación de Correo
+      </ion-button>
+    </ion-row>
+  </ion-grid>
+</ion-content>

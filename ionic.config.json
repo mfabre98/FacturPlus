@@ -1,0 +1,7 @@
+{
+  "name": "FacturPlus",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
