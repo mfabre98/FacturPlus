@@ -1,6 +1,7 @@
 import { Component,OnInit } from '@angular/core';
 import { Router } from "@angular/router";
 import { AuthenticationService } from "../../services/authentication.service";
+import { PresentService } from "../../services/present.service";
 @Component({
   selector: 'app-login',
   templateUrl: './login.page.html',
@@ -9,7 +10,8 @@ import { AuthenticationService } from "../../services/authentication.service";
 export class LoginPage implements OnInit {
   constructor(
     public authService: AuthenticationService,
-    public router: Router
+    public router: Router,
+    public present: PresentService
   ) {
     const user = localStorage.getItem('user');
     if (user){
@@ -24,7 +26,7 @@ export class LoginPage implements OnInit {
         if(this.authService.isEmailVerified) {
           this.router.navigate(['tabs/tab1']);          
         } else {
-          window.alert('Correo no verificado')
+          this.present.presentToast("Error. Correo no verificado.", 5000, 'danger');
           return false;
         }
       }).catch((error) => {

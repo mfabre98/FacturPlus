@@ -104,4 +104,22 @@ export class AuthenticationService {
       this.router.navigate(['tabs/login']);
     });
   }
+
+  async checkNoLogin() {
+    const user = localStorage.getItem('user');
+    if (user){
+        return true;
+    }
+    
+    return false;
+  }
+  
+  async checkLogin() {
+    const user = localStorage.getItem('user');
+    if (user){
+        return false;
+    }
+    
+    return true;
+  }
 }
