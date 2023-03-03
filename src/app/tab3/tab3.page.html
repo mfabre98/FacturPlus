@@ -1,17 +1,43 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Tab 3
-    </ion-title>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 3</ion-title>
-    </ion-toolbar>
-  </ion-header>
-
-  <app-explore-container name="Tab 3 page"></app-explore-container>
+    <div class="container">
+        <h2>Configuración</h2>
+        <form (ngSubmit)="onConfigEmpresaSubmit($event)">
+            <div class="wrapper">
+              <ion-item>
+                <ion-label position="stacked">Nombre de la empresa:</ion-label>
+                <ion-input id="nombre_empresa" name="nombre_empresa" [clearInput]="true" placeholder="Nombre" required="true"></ion-input>
+              </ion-item>
+              <ion-item>
+                <ion-label position="stacked">Dirección de la empresa:</ion-label>
+                <ion-input id="direccion_empresa" name="direccion_empresa" [clearInput]="true" placeholder="Dirección" required="true"></ion-input>
+              </ion-item>
+              <ion-item>
+                <ion-label position="stacked">Código postal:</ion-label>
+                <ion-input id="cp_empresa" name="cp_empresa" [clearInput]="true" placeholder="CP" required="true" required="true"></ion-input>
+              </ion-item>
+              <ion-item>
+                <ion-label position="stacked">Población:</ion-label>
+                <ion-input id="poblacion_empresa" name="poblacion_empresa" [clearInput]="true" placeholder="Población" required="true"></ion-input>
+              </ion-item>
+              <ion-item>
+                <ion-label position="stacked">Provincia:</ion-label>
+                <ion-input id="provincia_empresa" name="provincia_empresa" [clearInput]="true" placeholder="Provincia" required="true"></ion-input>
+              </ion-item>
+              <ion-item>
+                <ion-label position="stacked">País:</ion-label>
+                <ion-input id="pais_empresa" name="pais_empresa" [clearInput]="true" placeholder="País"></ion-input>
+              </ion-item>
+              <ion-item>
+                <ion-label position="stacked">NIF:</ion-label>
+                <ion-input id="nif_empresa" name="nif_empresa" [clearInput]="true" placeholder="NIF"></ion-input>
+              </ion-item>
+              <ion-item>
+                <ion-label position="stacked">IVA:</ion-label>
+                <ion-input id="iva" name="iva" [clearInput]="true" type="number" min="0" placeholder="IVA" value=0></ion-input>
+              </ion-item>
+              <ion-button type="submit" fill="outline">Guardar</ion-button>
+            </div>
+          </form>
+    
+    </div>
 </ion-content>

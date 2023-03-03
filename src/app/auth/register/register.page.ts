@@ -12,14 +12,15 @@ export class RegisterPage implements OnInit {
     public authService: AuthenticationService,
     public router: Router,
     public present: PresentService
-  ) { }
+  ) {    
+  }
   ngOnInit(){}
   signUp(email, password){
     this.authService.RegisterUser(email.value, password.value)
     .then((res) => {
       // Do something here
       this.authService.SendVerificationMail()
-      this.router.navigate(['tabs/verify-email']);
+      this.router.navigate(['factur/verificar-correo']);
     }).catch((error) => {
       this.present.presentToast("Error en el registro de usuario.", 5000, 'danger');
       console.log(error.message)

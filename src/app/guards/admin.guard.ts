@@ -6,7 +6,7 @@ import { AuthenticationService } from "../services/authentication.service";
 @Injectable({
   providedIn: 'root'
 })
-export class NoLoginGuard implements CanActivate {
+export class AdminGuard implements CanActivate {
 
   constructor(private router: Router, private authentication: AuthenticationService) {
   }
@@ -15,8 +15,9 @@ export class NoLoginGuard implements CanActivate {
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
         
-      return this.authentication.checkNoLogin().then(result =>  {
+      return this.authentication.checkAdmin().then(result =>  {
         if (result){
+            console.log("Admin confirmed!")
             return true;
         } else {
             this.router.navigate(['login']).then(r => {});

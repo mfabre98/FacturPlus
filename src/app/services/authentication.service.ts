@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/compat/firestore';
 import { UtilsService } from './storage.service';
+import { PresentService } from './present.service';
 
 @Injectable({
   providedIn: 'root',
@@ -12,7 +13,7 @@ import { UtilsService } from './storage.service';
 export class AuthenticationService {
   userData: any;
   constructor(public afStore: AngularFirestore, public ngFireAuth: AngularFireAuth, public router: Router,
-    public ngZone: NgZone, public storage: UtilsService) 
+    public ngZone: NgZone, public storage: UtilsService, public present: PresentService) 
   {
     this.ngFireAuth.authState.subscribe((user) => {
       if (user) {
@@ -37,7 +38,7 @@ export class AuthenticationService {
   SendVerificationMail() {
     return this.ngFireAuth.currentUser.then((user) => {
       return user.sendEmailVerification().then(() => {
-        this.router.navigate(['tabs/login']);
+        this.router.navigate(['login']);
       });
     });
   }
@@ -46,9 +47,7 @@ export class AuthenticationService {
     return this.ngFireAuth
       .sendPasswordResetEmail(passwordResetEmail)
       .then(() => {
-        window.alert(
-          'Password reset email has been sent, please check your inbox.'
-        );
+        this.present.presentToast("Se te ha enviado un correo para cambiar la contraseña, por favor, revisalo.", 2000);
       })
       .catch((error) => {
         window.alert(error);
@@ -65,23 +64,23 @@ export class AuthenticationService {
     return user.emailVerified !== false ? true : false;
   }
   // Sign in with Gmail
-  GoogleAuth() {
-    return this.AuthLogin(new auth.GoogleAuthProvider());
-  }
+  // GoogleAuth() {
+  //   return this.AuthLogin(new auth.GoogleAuthProvider());
+  // }
   // Auth providers
-  AuthLogin(provider) {
-    return this.ngFireAuth
-      .signInWithPopup(provider)
-      .then((result) => {
-        this.ngZone.run(() => {
-          this.router.navigate(['tabs/dashboard']);
-        });
-        this.SetUserData(result.user);
-      })
-      .catch((error) => {
-        window.alert(error);
-      });
-  }
+  // AuthLogin(provider) {
+  //   return this.ngFireAuth
+  //     .signInWithPopup(provider)
+  //     .then((result) => {
+  //       this.ngZone.run(() => {
+  //         this.router.navigate(['tabs/dashboard']);
+  //       });
+  //       this.SetUserData(result.user);
+  //     })
+  //     .catch((error) => {
+  //       window.alert(error);
+  //     });
+  // }
   // Store user in localStorage
   SetUserData(user) {
     const userRef: AngularFirestoreDocument<any> = this.afStore.doc(
@@ -101,13 +100,13 @@ export class AuthenticationService {
   SignOut() {
     return this.ngFireAuth.signOut().then(() => {
       localStorage.removeItem('user');
-      this.router.navigate(['tabs/login']);
+      this.router.navigate(['login']);
     });
   }
 
   async checkNoLogin() {
     const user = localStorage.getItem('user');
-    if (user){
+    if (user && user != "null"){
         return true;
     }
     
@@ -116,10 +115,21 @@ export class AuthenticationService {
   
   async checkLogin() {
     const user = localStorage.getItem('user');
-    if (user){
+    if (user && user != "null"){
         return false;
     }
     
     return true;
+  }
+  
+  async checkAdmin() {
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (user && user != "null"){
+      if (!user.email.includes("marcfabre10@gmail.com")){
+        return true;
+      }        
+    }
+    
+    return false;
   }
 }

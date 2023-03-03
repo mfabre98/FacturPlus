@@ -15,7 +15,7 @@ export class LoginPage implements OnInit {
   ) {
     const user = localStorage.getItem('user');
     if (user){
-      this.router.navigate(['tabs/tab1']);
+      this.router.navigate(['factur']);
     }
   }
   ngOnInit() {}
@@ -24,13 +24,14 @@ export class LoginPage implements OnInit {
       .then((res) => {
         let r = res
         if(this.authService.isEmailVerified) {
-          this.router.navigate(['tabs/tab1']);          
+          window.location.reload();
+          this.router.navigate(['factur']);          
         } else {
           this.present.presentToast("Error. Correo no verificado.", 5000, 'danger');
           return false;
         }
       }).catch((error) => {
-        window.alert(error.message)
+        window.location.reload();
       })
   }
 }
