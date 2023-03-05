@@ -7,10 +7,28 @@ import { Component, OnInit } from '@angular/core';
 })
 export class Tab2Page implements OnInit {
 
+  lineasPresupuesto: Array<any> = []
+
   constructor() {}
   
   ngOnInit(): void {
-    throw new Error('Method not implemented.');
+    
+  }
+
+  addNewLine(){
+
+  }
+
+  editLine(id){
+
+  }
+
+  removeLine(id){
+
+  }
+
+  generatePdf(){
+    
   }
 
 }

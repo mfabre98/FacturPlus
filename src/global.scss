@@ -33,3 +33,23 @@
     padding-top: 20px;
     padding-bottom: 15px;
 }
+
+.bg-green{
+    --ion-background-color: #21f77a;
+}
+
+.col-black{
+    --color: #000000;
+}
+
+.col-black:hover{
+    --color: #ff0000;
+}
+
+.userOptions{
+    --color: #03d35a;
+}
+
+.userOptions:hover{
+    --color: #ff0000;
+}

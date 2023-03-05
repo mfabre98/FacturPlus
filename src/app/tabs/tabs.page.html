@@ -1,19 +1,19 @@
 <ion-tabs>
   <ion-header>
-    <ion-toolbar *ngIf="isLoggedIn">
+    <ion-toolbar *ngIf="isLoggedIn" class="bg-green">
       <ion-row class="ion-align-items-center">
         <ion-col size="2">
           <!-- <img src="./assets/logo.webp" class="logo ion-text-left"> -->
-          <ion-button fill="clear" class="link ion-text-left" (click)="navigateTo('factur/facturas')">FacturPlus</ion-button>
+          <ion-button fill="clear" class="col-black ion-text-left" (click)="navigateTo('factur/facturas')">FacturPlus</ion-button>
         </ion-col>
         <ion-col size="10">
           <div class="navbar" class="ion-text-right">
-            <ion-button fill="clear" id="click-trigger">{{userName}}</ion-button>
+            <ion-button fill="clear" class="col-black" id="click-trigger">{{userName}}</ion-button>
             <ion-popover trigger="click-trigger" triggerAction="click">
               <ng-template>
                 <ion-content class="ion-padding">
-                  <ion-button fill="clear" (click)="logOut()" expand="block">Desconectar</ion-button>
-                  <ion-button fill="clear" (click)="navigateTo('factur/registrar')" expand="block" *ngIf="isAdmin">Registrar cuenta</ion-button>
+                  <ion-button fill="clear" class="userOptions" (click)="logOut()" expand="block">Desconectar</ion-button>
+                  <ion-button fill="clear" class="userOptions" (click)="navigateTo('factur/registrar')" expand="block" *ngIf="isAdmin">Registrar cuenta</ion-button>
                 </ion-content>
               </ng-template>
             </ion-popover>
@@ -24,7 +24,7 @@
   </ion-header>
   
 
-  <ion-tab-bar slot="bottom" *ngIf="isLoggedIn">
+  <ion-tab-bar slot="bottom" *ngIf="isLoggedIn" class="bg-green">
     <ion-tab-button tab="facturas">
       <ion-icon aria-hidden="true" name="server-outline"></ion-icon>
       <ion-label>Generar Factura</ion-label>

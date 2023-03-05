@@ -18,7 +18,6 @@ export class TabsPage {
     let user: any = JSON.parse(localStorage.getItem('user'));
     if (user && user != "null"){
       this.isLoggedIn = true;
-      debugger;
       this.user = user;
       const words = user.email.split("@");
       this.userName = words[0];
@@ -34,7 +33,6 @@ export class TabsPage {
   }
 
   navigateTo(route: string){
-    debugger;
     this.router.navigate([route]);
   }
 

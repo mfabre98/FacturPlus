@@ -12,14 +12,20 @@ export const environment = {
     messagingSenderId: "880474156453",
     appId: "1:880474156453:web:3e79b797aebf740ee48c4c",
     measurementId: "G-E9ME8Z49VC"
-  }
+  },
+  urlConf: 'https://facturplus1-default-rtdb.europe-west1.firebasedatabase.app'
 };
 
-/*
- * For easier debugging in development mode, you can import the following file
- * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.
- *
- * This import should be commented out in production mode because it will have a negative impact
- * on performance if an error is thrown.
- */
-// import 'zone.js/plugins/zone-error';  // Included with Angular CLI.
+const PARENT = {
+  fpnet: environment.urlConf + '/fpnet',
+};
+
+
+const fpnet = {
+  post_config: PARENT.fpnet + '/config',
+  post_comments: PARENT.fpnet + '/comments'
+};
+
+export const SERVER_URLS = {
+  fpnet
+};

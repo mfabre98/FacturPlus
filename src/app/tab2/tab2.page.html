@@ -1,3 +1,38 @@
 <ion-content [fullscreen]="true">
-  
+    <div class="container">
+        <ion-button (click)="addNewLine()">
+            Añadir producto al presupuesto
+        </ion-button>
+        <div class="lineas-presupuesto">
+            <ion-grid>
+                <ion-row>
+                  <ion-col>Nombre</ion-col>
+                  <ion-col>Cantidad</ion-col>
+                  <ion-col>Precio sin IVA</ion-col>
+                  <ion-col>Editar producto</ion-col>
+                  <ion-col>Eliminar producto</ion-col>
+                </ion-row>
+                <ion-row *ngFor="let linea of lineasPresupuesto">
+                    <ion-col>{{linea.nombreProducto}}</ion-col>
+                    <ion-col>{{linea.cantidad}}</ion-col>
+                    <ion-col>{{linea.precioSinIva}}</ion-col>
+                    <ion-col>
+                        <ion-button (click)="editLine(linea.id)">
+                            <ion-icon name="trash-outline"></ion-icon>
+                        </ion-button>
+                    </ion-col>
+                    <ion-col>
+                        <ion-button (click)="removeLine(linea.id)">
+                            <ion-icon name="trash-outline"></ion-icon>
+                        </ion-button>
+                    </ion-col>
+                </ion-row>
+            </ion-grid>
+        </div>
+        <ion-fab slot="fixed" vertical="bottom" horizontal="start" style="margin-left: 30px; margin-bottom: 30px; position: fixed; bottom: 0px;" >
+            <ion-button (click)="generatePdf()">
+                Generar Presupuesto
+            </ion-button>
+        </ion-fab>
+    </div>
 </ion-content>
