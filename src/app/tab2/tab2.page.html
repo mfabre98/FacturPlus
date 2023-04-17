@@ -8,7 +8,7 @@
             <ion-label position="stacked">Precio total con IVA: {{precioTotalConIva.toFixed(2)}}</ion-label>
         </div>
         <br/><br/>
-        <div class="lineas-presupuesto" style="width: 80%; height: 50%; overflow: auto; position:absolute;">
+        <div class="lineas-presupuesto" style="width: 80%; height: 50%; overflow: auto; position:absolute;" *ngIf="isDesktop">
             <ion-grid>
                 <ion-row>
                   <ion-col>Nombre</ion-col>
@@ -34,9 +34,35 @@
                 </ion-row>
             </ion-grid>
         </div>
-        <ion-fab slot="fixed" vertical="bottom" horizontal="start" style="margin-left: 30px; margin-bottom: 30px; position: fixed; bottom: 0px;" >
+        <div style="width: 80%; height: 50%; max-height: 50%; overflow: auto;" *ngIf="!isDesktop">
+            <ion-accordion-group expand="inset">
+                <ion-accordion *ngFor="let linea of lineasPresupuesto" [value]="linea.id">
+                    <ion-item slot="header" color="light">
+                        <ion-label>{{linea.nombreProducto}}</ion-label>
+                    </ion-item>
+                    <ion-item slot="content" style="margin: 5px;">
+                        <ion-label position="stacked" style="font-size: 20px;">Cantidad: {{linea.cantidad}}</ion-label>
+                        <ion-label position="stacked" style="font-size: 20px; margin-bottom: 10px;">Precio: {{linea.precioSinIva}}</ion-label>
+                        <ion-button (click)="editLine(linea.id)">
+                            <ion-icon name="pencil-outline"></ion-icon>
+                        </ion-button>
+                        <ion-button (click)="removeLine(linea.id)">
+                            <ion-icon name="trash-outline"></ion-icon>
+                        </ion-button>
+                    </ion-item>
+                </ion-accordion>
+            </ion-accordion-group>
+        </div>
+        
+        <ion-fab slot="fixed" vertical="bottom" horizontal="start" style="margin-left: 30px; margin-bottom: 30px; position: fixed; bottom: 0px;" *ngIf="isDesktop && lineasPresupuesto.length >= 1">
             <ion-button (click)="generatePdf()">
                 Generar Presupuesto
+            </ion-button>
+        </ion-fab>
+        
+        <ion-fab slot="fixed" vertical="bottom" horizontal="end" style="margin-right: 30px; margin-bottom: 30px; position: fixed; bottom: 0px;" *ngIf="!isDesktop && lineasPresupuesto.length >= 1">
+            <ion-button title="Generar PDF" (click)="generatePdf()">
+                <ion-icon name="create-outline"></ion-icon>
             </ion-button>
         </ion-fab>
     </div>

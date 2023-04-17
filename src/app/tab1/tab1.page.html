@@ -1,3 +1,107 @@
 <ion-content [fullscreen]="true">
+    <div class="container">
+        <ion-button (click)="addNewLine()">
+            Añadir producto
+        </ion-button>
+        <div class="totalConIva" *ngIf="mostrarTotales">
+            <ion-label position="stacked">Precio total sin IVA: {{precioTotalSinIva.toFixed(2)}}</ion-label><br/>
+            <ion-label position="stacked">Precio total con IVA: {{precioTotalConIva.toFixed(2)}}</ion-label>
+        </div>
+        <br/><br/>
+        <div class="lineas-presupuesto" style="width: 80%; height: 50%; overflow: auto; position:absolute;" *ngIf="isDesktop">
+            <ion-grid>
+                <ion-row>
+                  <ion-col>Nombre</ion-col>
+                  <ion-col>Cantidad</ion-col>
+                  <ion-col>Precio sin IVA</ion-col>
+                  <ion-col>Editar producto</ion-col>
+                  <ion-col>Eliminar producto</ion-col>
+                </ion-row>
+                <ion-row *ngFor="let linea of lineasFactura">
+                    <ion-col>{{linea.nombreProducto}}</ion-col>
+                    <ion-col>{{linea.cantidad}}</ion-col>
+                    <ion-col>{{linea.precioSinIva}}</ion-col>
+                    <ion-col>
+                        <ion-button (click)="editLine(linea.id)">
+                            <ion-icon name="pencil-outline"></ion-icon>
+                        </ion-button>
+                    </ion-col>
+                    <ion-col>
+                        <ion-button (click)="removeLine(linea.id)">
+                            <ion-icon name="trash-outline"></ion-icon>
+                        </ion-button>
+                    </ion-col>
+                </ion-row>
+            </ion-grid>
+        </div>
+        <div style="width: 80%; height: 50%; max-height: 50%; overflow: auto;" *ngIf="!isDesktop">
+            <ion-accordion-group expand="inset">
+                <ion-accordion *ngFor="let linea of lineasFactura" [value]="linea.id">
+                    <ion-item slot="header" color="light">
+                        <ion-label>{{linea.nombreProducto}}</ion-label>
+                    </ion-item>
+                    <ion-item slot="content" style="margin: 5px;">
+                        <ion-label position="stacked" style="font-size: 20px;">Cantidad: {{linea.cantidad}}</ion-label>
+                        <ion-label position="stacked" style="font-size: 20px; margin-bottom: 10px;">Precio: {{linea.precioSinIva}}</ion-label>
+                        <ion-button (click)="editLine(linea.id)">
+                            <ion-icon name="pencil-outline"></ion-icon>
+                        </ion-button>
+                        <ion-button (click)="removeLine(linea.id)">
+                            <ion-icon name="trash-outline"></ion-icon>
+                        </ion-button>
+                    </ion-item>
+                </ion-accordion>
+            </ion-accordion-group>
+        </div>
+        
+        <ion-fab slot="fixed" vertical="bottom" horizontal="start" style="margin-left: 30px; margin-bottom: 30px; position: fixed; bottom: 0px;" *ngIf="isDesktop && lineasFactura.length >= 1">
+            <ion-button (click)="generatePdf()">
+                Generar Factura
+            </ion-button>
+        </ion-fab>
+        
+        <ion-fab slot="fixed" vertical="bottom" horizontal="end" style="margin-right: 30px; margin-bottom: 30px; position: fixed; bottom: 0px;" *ngIf="!isDesktop && lineasFactura.length >= 1">
+            <ion-button title="Generar PDF" (click)="generatePdf()">
+                <ion-icon name="create-outline"></ion-icon>
+            </ion-button>
+        </ion-fab>
+    </div>
 
+    <ion-modal id="modal_addBudget" trigger="open-modal" [isOpen]="modals.addBudget" (didDismiss)="onWillDismiss($event)">
+        <ng-template>
+            <ion-header>
+                <ion-toolbar>
+                <ion-buttons slot="start">
+                    <ion-button (click)="cancel()">
+                        <ion-icon name="close"></ion-icon>
+                    </ion-button>
+                </ion-buttons>
+                <ion-title>{{ titleModCre }}</ion-title>
+                </ion-toolbar>
+            </ion-header>
+            <ion-content class="ion-padding">
+                <div class="container">
+                    <h2>Producto</h2>
+                    <form (ngSubmit)="onAddBudgetSubmit($event)">
+                        <div class="wrapper">
+                            <ion-item>
+                                <ion-label position="stacked">Nombre:</ion-label>
+                                <ion-input id="nombre_producto" name="nombre_producto" [clearInput]="true" placeholder="Nombre" [(ngModel)]="nombreProducto" required="true"></ion-input>
+                            </ion-item>
+                            <ion-item>
+                                <ion-label position="stacked">Cantidad:</ion-label>
+                                <ion-input id="cantidad" name="cantidad" [clearInput]="true" type="number" min="0" placeholder="Cantidad" [(ngModel)]="cantidad" value=0 required="true"></ion-input>
+                            </ion-item>
+                            <ion-item>
+                                <ion-label position="stacked">Precio sin IVA:</ion-label>
+                                <ion-input id="precio_sin_iva" name="precio_sin_iva" [clearInput]="true" placeholder="Precio" [(ngModel)]="precioSinIva" required="true"></ion-input>
+                            </ion-item>
+                            <ion-button type="submit" fill="outline">Guardar</ion-button>
+                        </div>
+                    </form>
+               </div>
+            </ion-content>
+        </ng-template>
+    </ion-modal>
+    
 </ion-content>

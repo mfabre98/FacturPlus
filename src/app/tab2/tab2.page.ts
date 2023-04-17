@@ -12,6 +12,8 @@ export class Tab2Page implements OnInit {
   user: any;
   userConfig: any;
 
+  isDesktop: boolean;
+
   lineasPresupuesto: Array<any> = []
   showAddBudgetForm: boolean = false;
   modals: any = {
@@ -30,7 +32,13 @@ export class Tab2Page implements OnInit {
   precioTotalSinIva: number = 0;
   precioTotalConIva: number = 0;
 
-  constructor(public present: PresentService, private server: ServerService) {}
+  constructor(public present: PresentService, private server: ServerService) {
+    if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
+      this.isDesktop = false;
+    } else{
+      this.isDesktop = true;
+    }
+  }
   
   async ngOnInit(): Promise<void> {
     this.user = JSON.parse(localStorage.getItem('user'));
