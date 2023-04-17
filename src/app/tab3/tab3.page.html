@@ -1,7 +1,7 @@
 <ion-content [fullscreen]="true">
     <div class="container">
-        <h2>Configuración</h2>
-        <form (ngSubmit)="onConfigEmpresaSubmit($event)">
+         <h2>Configuración</h2>
+         <form (ngSubmit)="onConfigEmpresaSubmit($event)">
             <div class="wrapper">
               <ion-item>
                 <ion-label position="stacked">Nombre de la empresa:</ion-label>
@@ -13,7 +13,7 @@
               </ion-item>
               <ion-item>
                 <ion-label position="stacked">Código postal:</ion-label>
-                <ion-input id="cp_empresa" name="cp_empresa" [clearInput]="true" placeholder="CP" required="true" [(ngModel)]="cpEmpresa" required="true"></ion-input>
+                <ion-input id="cp_empresa" name="cp_empresa" [clearInput]="true" type="number" min="0" placeholder="CP" [(ngModel)]="cpEmpresa" value=0 required="true"></ion-input>
               </ion-item>
               <ion-item>
                 <ion-label position="stacked">Población:</ion-label>
@@ -25,11 +25,11 @@
               </ion-item>
               <ion-item>
                 <ion-label position="stacked">País:</ion-label>
-                <ion-input id="pais_empresa" name="pais_empresa" [clearInput]="true" [(ngModel)]="paisEmpresa" placeholder="País"></ion-input>
+                <ion-input id="pais_empresa" name="pais_empresa" [clearInput]="true" [(ngModel)]="paisEmpresa" placeholder="País" required="true"></ion-input>
               </ion-item>
               <ion-item>
                 <ion-label position="stacked">NIF:</ion-label>
-                <ion-input id="nif_empresa" name="nif_empresa" [clearInput]="true" [(ngModel)]="nifEmpresa" placeholder="NIF"></ion-input>
+                <ion-input id="nif_empresa" name="nif_empresa" [clearInput]="true" [(ngModel)]="nifEmpresa" placeholder="NIF" required="true" ></ion-input>
               </ion-item>
               <ion-item>
                 <ion-label position="stacked">IVA:</ion-label>
@@ -37,7 +37,6 @@
               </ion-item>
               <ion-button type="submit" fill="outline">Guardar</ion-button>
             </div>
-          </form>
-    
+         </form>
     </div>
 </ion-content>

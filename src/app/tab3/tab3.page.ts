@@ -11,7 +11,7 @@ export class Tab3Page implements OnInit {
 
   nombreEmpresa: string = "";
   direccionEmpresa: string = "";
-  cpEmpresa: string = "";
+  cpEmpresa: number = 0;
   poblacionEmpresa: string = "";
   provinciaEmpresa: string = "";
   paisEmpresa: string = "";
@@ -51,15 +51,15 @@ export class Tab3Page implements OnInit {
   onConfigEmpresaSubmit(event: any) {
     this.nombreEmpresa = event.target[0].value;
     this.direccionEmpresa = event.target[2].value;
-    this.cpEmpresa = event.target[4].value;
+    this.cpEmpresa = parseFloat(event.target[4].value);
     this.poblacionEmpresa = event.target[6].value;
     this.provinciaEmpresa = event.target[8].value;
     this.paisEmpresa = event.target[10].value;
     this.nifEmpresa = event.target[12].value;
     this.iva = parseFloat(event.target[14].value);
-    if (this.nombreEmpresa == "" || this.direccionEmpresa == "" || this.cpEmpresa == "" 
+    if (this.nombreEmpresa == "" || this.direccionEmpresa == "" || (isNaN(this.cpEmpresa) || this.cpEmpresa < 1) 
         || this.poblacionEmpresa == "" || this.provinciaEmpresa == "" || this.paisEmpresa == "" 
-        || this.nifEmpresa == "" || isNaN(this.iva)) {
+        || this.nifEmpresa == "" || (isNaN(this.iva) || this.iva < 0)) {
       this.present.presentToast("Error. Falta un campo para informar.", 5000, 'danger');
       return;
     }
