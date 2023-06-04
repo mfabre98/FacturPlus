@@ -57,7 +57,7 @@ export class Tab3Page implements OnInit {
     this.paisEmpresa = event.target[10].value;
     this.nifEmpresa = event.target[12].value;
     this.iva = parseFloat(event.target[14].value);
-    if (this.nombreEmpresa == "" || this.direccionEmpresa == "" || (isNaN(this.cpEmpresa) || this.cpEmpresa < 1) 
+    if (this.nombreEmpresa == "" || this.direccionEmpresa == "" || (isNaN(this.cpEmpresa) || this.cpEmpresa <= 0) 
         || this.poblacionEmpresa == "" || this.provinciaEmpresa == "" || this.paisEmpresa == "" 
         || this.nifEmpresa == "" || (isNaN(this.iva) || this.iva < 0)) {
       this.present.presentToast("Error. Falta un campo para informar.", 5000, 'danger');
@@ -76,7 +76,12 @@ export class Tab3Page implements OnInit {
       "numFactura": this.numFactura
     }
     if (this.user && this.user.uid){
-      this.server.saveConfig(config, this.user.uid)
+      this.server.saveConfig(config, this.user.uid).then(result => {
+        this.present.presentToast("Datos guardados correctamente.", 5000, 'danger');
+      })
+      .catch(e => {
+        this.present.presentToast("Error. No se ha podido guardar la configuración.", 5000, 'danger');
+      });
     } else {
       this.present.presentToast("Error. No se ha podido guardar la configuración.", 5000, 'danger');
     }    

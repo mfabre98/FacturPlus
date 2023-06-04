@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { PDFGenerator } from '@awesome-cordova-plugins/pdf-generator/ngx';
 import { PresentService } from '../services/present.service';
 import { ServerService } from '../services/server.service';
 
@@ -25,14 +26,20 @@ export class Tab2Page implements OnInit {
   id: number = 0;
   nombreProducto: string = "";
   cantidad: number = 0;
+  boolConIva: boolean = true;
   precioSinIva: number = 0;
+  precioConIva: number = 0;
 
   idLinea: number = 0;
   mostrarTotales: boolean = false;
   precioTotalSinIva: number = 0;
   precioTotalConIva: number = 0;
 
-  constructor(public present: PresentService, private server: ServerService) {
+  mostrarPdfHtml: boolean = false;
+  data: string;
+  content: string;
+
+  constructor(public present: PresentService, private server: ServerService, private pdfGenerator: PDFGenerator) {
     if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
       this.isDesktop = false;
     } else{
@@ -48,7 +55,7 @@ export class Tab2Page implements OnInit {
       this.userConfig = config[key].empresa;
     } else {
       this.present.presentToast("Error. No se ha encontrado ninguna configuración guardada.", 5000, 'danger');
-    } 
+    }
   }
 
   addNewLine(){
@@ -68,6 +75,7 @@ export class Tab2Page implements OnInit {
       this.nombreProducto = this.lineasPresupuesto[index].nombreProducto;
       this.cantidad = this.lineasPresupuesto[index].cantidad;
       this.precioSinIva = this.lineasPresupuesto[index].precioSinIva;
+      this.precioConIva = this.lineasPresupuesto[index].precioConIva;
       this.modals.addBudget = true;
       this.titleModCre = "Editar";      
     } else {
@@ -77,13 +85,19 @@ export class Tab2Page implements OnInit {
   }
 
   onAddBudgetSubmit(event: any) {
-    this.nombreProducto = event.target[0].value;
-    this.cantidad = parseFloat(event.target[2].value);
-    this.precioSinIva = parseFloat(event.target[4].value);
-    if (this.nombreProducto == "" || (isNaN(this.cantidad) || this.cantidad < 1) || (isNaN(this.precioSinIva) || this.precioSinIva < 1)) {
-      this.present.presentToast("Error. Falta uno o varios campos para informar.", 5000, 'danger');
+    if (this.boolConIva){
+      let iva = '1.' + this.userConfig.iva
+      this.precioSinIva = parseFloat((this.precioConIva/parseFloat(iva)).toFixed(2))
+    } else {
+      let iva = '1.' + this.userConfig.iva
+      this.precioConIva = parseFloat((this.precioConIva/parseFloat(iva)).toFixed(2))
+    }
+    
+    let error = this.validarCampos()
+    if (error) {
       return;
     }
+    
     
     let esEditar = false;
     if (this.id == 0){
@@ -98,6 +112,7 @@ export class Tab2Page implements OnInit {
         this.lineasPresupuesto[index].nombreProducto = this.nombreProducto;
         this.lineasPresupuesto[index].cantidad = this.cantidad;
         this.lineasPresupuesto[index].precioSinIva = this.precioSinIva;
+        this.lineasPresupuesto[index].precioConIva = this.precioConIva;
       } else {
         this.present.presentToast("Error. No se ha podido editar la linea.", 5000, 'danger');
         return;
@@ -107,7 +122,8 @@ export class Tab2Page implements OnInit {
         "id": this.id, 
         "nombreProducto": this.nombreProducto,
         "cantidad": this.cantidad,
-        "precioSinIva": this.precioSinIva
+        "precioSinIva": this.precioSinIva,
+        "precioConIva": this.precioConIva
       }
   
       this.lineasPresupuesto.push(linea);
@@ -119,17 +135,8 @@ export class Tab2Page implements OnInit {
     this.nombreProducto = "";
     this.cantidad = 0;
     this.precioSinIva = 0;
-    this.modals.addBudget = false;
-    //TODO: ABRIR PANTALLA DONDE MOSTRAR EL PREVIEW DEL PDF Y BOTON DE GENERAR
-    // if (this.user && this.user.uid){
-    //   let ok = await this.server.saveConfig(config, this.user.uid);
-    //   this.nombreProducto = "";
-    //   this.cantidad = 0;
-    //   this.cantidad = 0;
-    //   this.modals.addBudget = false;
-    // } else {
-    //   this.present.presentToast("Error. No se ha podido guardar la configuración.", 5000, 'danger');
-    // }    
+    this.precioConIva = 0;
+    this.modals.addBudget = false;  
   }
 
   removeLine(id){
@@ -140,6 +147,14 @@ export class Tab2Page implements OnInit {
     } else {
       this.present.presentToast("Error. No se ha podido eliminar la linea.", 5000, 'danger');
       return;
+    }
+  }
+
+  onChangeBoolConIva(event){
+    if (event.detail.checked){
+      this.boolConIva = true;
+    } else {
+      this.boolConIva = false;
     }
   }
 
@@ -159,7 +174,36 @@ export class Tab2Page implements OnInit {
   }
 
   generatePdf(){
+    this.mostrarPdfHtml = true;
+    let date = new Date()
+    this.data = date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear();
+  }
+
+  descargarPdf() {
+    this.content = document.getElementById('PrintInvoice').innerHTML;
+    let options = {
+      documentSize: 'A4',
+      type: 'share',
+      fileName: 'Presupuesto.pdf'
+    };
     
+    this.pdfGenerator.fromData(this.content, options)
+      .then((base64) => {
+        console.log('OK', base64);
+        this.mostrarPdfHtml = false;
+      }).catch((error) => {
+        if (error == "cordova_not_available") {
+          this.present.presentToast("Error generando el PDF, intentas ejecutar una funcionalidad solo soportada en Android.", 5000, 'danger');
+        } else {
+          this.present.presentToast("Error generando el PDF, por favor contacte a un administrador.", 5000, 'danger');
+        }
+        console.log('error', error);
+        
+      });
+  }
+
+  cancelarDescargaPdf(){
+    this.mostrarPdfHtml = false;
   }
 
   onWillDismiss(event: any) {
@@ -174,6 +218,24 @@ export class Tab2Page implements OnInit {
     this.nombreProducto = "";
     this.cantidad = 0;
     this.precioSinIva = 0;
+    this.precioConIva = 0;
+  }
+
+  validarCampos(){
+    if (!this.nombreProducto || this.nombreProducto == "") {
+      this.present.presentToast("Error. Debe informarse el nombre del producto.", 5000, 'danger');
+      return true;
+    } else if (!this.cantidad || this.cantidad <= 0) {
+      this.present.presentToast("Error. Debe informarse la cantidad del producto.", 5000, 'danger');
+      return true;
+    } else if (!this.boolConIva && (!this.precioSinIva || this.precioSinIva <= 0)) {
+      this.present.presentToast("Error. Debe informarse el precio sin IVA del producto.", 5000, 'danger');
+      return true;
+    } else if (this.boolConIva && (!this.precioSinIva || this.precioSinIva <= 0)) {
+      this.present.presentToast("Error. Debe informarse el precio con IVA del producto.", 5000, 'danger');
+      return true;
+    }
+    return false;
   }
 
 }
