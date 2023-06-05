@@ -8,6 +8,14 @@
                 <ion-input id="nombre_empresa" name="nombre_empresa" [clearInput]="true" placeholder="Nombre" [(ngModel)]="nombreEmpresa" required="true"></ion-input>
               </ion-item>
               <ion-item>
+                <ion-label position="stacked">Correo electronico de la empresa:</ion-label>
+                <ion-input id="email_empresa" name="email_empresa" [clearInput]="true" placeholder="Email" [(ngModel)]="emailEmpresa" required="true"></ion-input>
+              </ion-item>
+              <ion-item>
+                <ion-label position="stacked">Telefono de la empresa:</ion-label>
+                <ion-input id="telefono_empresa" name="telefono_empresa" [clearInput]="true" placeholder="Telefono" [(ngModel)]="telefonoEmpresa" required="true"></ion-input>
+              </ion-item>
+              <ion-item>
                 <ion-label position="stacked">Dirección de la empresa:</ion-label>
                 <ion-input id="direccion_empresa" name="direccion_empresa" [clearInput]="true" placeholder="Dirección" [(ngModel)]="direccionEmpresa" required="true"></ion-input>
               </ion-item>
@@ -28,8 +36,8 @@
                 <ion-input id="pais_empresa" name="pais_empresa" [clearInput]="true" [(ngModel)]="paisEmpresa" placeholder="País" required="true"></ion-input>
               </ion-item>
               <ion-item>
-                <ion-label position="stacked">NIF:</ion-label>
-                <ion-input id="nif_empresa" name="nif_empresa" [clearInput]="true" [(ngModel)]="nifEmpresa" placeholder="NIF" required="true" ></ion-input>
+                <ion-label position="stacked">CIF:</ion-label>
+                <ion-input id="cif_empresa" name="cif_empresa" [clearInput]="true" [(ngModel)]="cifEmpresa" placeholder="CIF" required="true" ></ion-input>
               </ion-item>
               <ion-item>
                 <ion-label position="stacked">IVA:</ion-label>

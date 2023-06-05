@@ -10,7 +10,7 @@ import { TabsPage } from "../tabs/tabs.page";
   templateUrl: 'tab1.page.html',
   styleUrls: ['tab1.page.scss']
 })
-export class Tab1Page implements OnInit {
+export class Tab1Page {
 
   user: any;
   userConfig: any;
@@ -40,6 +40,7 @@ export class Tab1Page implements OnInit {
   mostrarPdfHtml: boolean = false;
   data: string;
   content: string;
+  numFactura: number = 0;
 
   constructor(public authService: AuthenticationService, public tabs: TabsPage, public present: PresentService, private server: ServerService, private pdfGenerator: PDFGenerator) {
     if (this.authService.isLoggedIn){
@@ -52,16 +53,25 @@ export class Tab1Page implements OnInit {
       this.isDesktop = true;
     }
   }
-  
-  async ngOnInit(): Promise<void> {
+
+  ionViewDidEnter(){
+    this.getUserConfig();
+  }
+
+  async getUserConfig(){
     this.user = JSON.parse(localStorage.getItem('user'));
-    let config = await this.server.findConfigOf(this.user.uid);
-    if (config){
-      let key = Object.keys(config)[0];
-      this.userConfig = config[key].empresa;
-    } else {
+    this.server.findConfigOf(this.user.uid).then((data: any) => {
+      if (data){
+        let key = Object.keys(data)[0];
+        this.userConfig = data[key].empresa;
+        this.numFactura = this.userConfig.numFactura ? parseInt(this.userConfig.numFactura) + 1 : 1;
+        this.userConfig.numFactura = parseInt(this.userConfig.numFactura) + 1;
+      } else {
+        this.present.presentToast("Error. No se ha encontrado ninguna configuración guardada.", 5000, 'danger');
+      } 
+    }).catch(error => {
       this.present.presentToast("Error. No se ha encontrado ninguna configuración guardada.", 5000, 'danger');
-    } 
+    });
   }
 
   addNewLine(){
@@ -178,13 +188,17 @@ export class Tab1Page implements OnInit {
     }    
   }
 
+  limpiarLista(){
+    this.lineasFactura = [];
+  }
+
   generatePdf(){
     this.mostrarPdfHtml = true;
     let date = new Date()
     this.data = date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear();
   }
 
-  descargarPdf() {
+  async descargarPdf() {    
     this.content = document.getElementById('PrintInvoice').innerHTML;
     let options = {
       documentSize: 'A4',
@@ -193,9 +207,13 @@ export class Tab1Page implements OnInit {
     };
     
     this.pdfGenerator.fromData(this.content, options)
-      .then((base64) => {
-        console.log('OK', base64);
+      .then(async (base64) => {
         this.mostrarPdfHtml = false;
+        await this.server.saveConfig(this.userConfig, this.user.uid).then(async result => {
+          await this.getUserConfig();
+        }).catch(e => {
+          console.log(e)
+        });
       }).catch((error) => {
         if (error == "cordova_not_available") {
           this.present.presentToast("Error generando el PDF, intentas ejecutar una funcionalidad solo soportada en Android.", 5000, 'danger');

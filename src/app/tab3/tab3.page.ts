@@ -11,13 +11,16 @@ export class Tab3Page implements OnInit {
 
   nombreEmpresa: string = "";
   direccionEmpresa: string = "";
+  emailEmpresa: string = "";
+  telefonoEmpresa: string = "";
   cpEmpresa: number = 0;
   poblacionEmpresa: string = "";
   provinciaEmpresa: string = "";
   paisEmpresa: string = "";
-  nifEmpresa: string = "";
+  cifEmpresa: string = "";
   iva: number = 0;
   numFactura: number = 0;
+  numPresupuesto: number = 0;
   user: any;
 
   constructor(public present: PresentService, private server: ServerService) {}
@@ -32,13 +35,16 @@ export class Tab3Page implements OnInit {
         let key = Object.keys(config)[0];
         this.nombreEmpresa = config[key].empresa.nombreEmpresa;
         this.direccionEmpresa = config[key].empresa.direccionEmpresa;
+        this.emailEmpresa = config[key].empresa.emailEmpresa;
+        this.telefonoEmpresa = config[key].empresa.telefonoEmpresa;
         this.cpEmpresa = config[key].empresa.cpEmpresa;
         this.poblacionEmpresa = config[key].empresa.poblacionEmpresa;
         this.provinciaEmpresa = config[key].empresa.provinciaEmpresa;
         this.paisEmpresa = config[key].empresa.paisEmpresa;
-        this.nifEmpresa = config[key].empresa.nifEmpresa;
+        this.cifEmpresa = config[key].empresa.cifEmpresa;
         this.iva = config[key].empresa.iva;
         this.numFactura = config[key].empresa.numFactura;
+        this.numPresupuesto = config[key].empresa.numPresupuesto;
       } else {
         this.present.presentToast("Error. No se ha encontrado ninguna configuración guardada.", 5000, 'danger');
       }      
@@ -49,35 +55,29 @@ export class Tab3Page implements OnInit {
   }
 
   onConfigEmpresaSubmit(event: any) {
-    this.nombreEmpresa = event.target[0].value;
-    this.direccionEmpresa = event.target[2].value;
-    this.cpEmpresa = parseFloat(event.target[4].value);
-    this.poblacionEmpresa = event.target[6].value;
-    this.provinciaEmpresa = event.target[8].value;
-    this.paisEmpresa = event.target[10].value;
-    this.nifEmpresa = event.target[12].value;
-    this.iva = parseFloat(event.target[14].value);
-    if (this.nombreEmpresa == "" || this.direccionEmpresa == "" || (isNaN(this.cpEmpresa) || this.cpEmpresa <= 0) 
-        || this.poblacionEmpresa == "" || this.provinciaEmpresa == "" || this.paisEmpresa == "" 
-        || this.nifEmpresa == "" || (isNaN(this.iva) || this.iva < 0)) {
-      this.present.presentToast("Error. Falta un campo para informar.", 5000, 'danger');
-      return;
+    let error = this.validarCampos();
+    if (error){
+      return
     }
     let config = {
       "uId": this.user.uid,
       "nombreEmpresa": this.nombreEmpresa,
       "direccionEmpresa": this.direccionEmpresa,
+      "emailEmpresa": this.emailEmpresa,
+      "telefonoEmpresa": this.telefonoEmpresa,
       "cpEmpresa": this.cpEmpresa,
       "poblacionEmpresa": this.poblacionEmpresa,
       "provinciaEmpresa": this.provinciaEmpresa,
       "paisEmpresa": this.paisEmpresa,
-      "nifEmpresa": this.nifEmpresa,
+      "cifEmpresa": this.cifEmpresa,
       "iva": this.iva,
-      "numFactura": this.numFactura
+      "numFactura": this.numFactura,
+      "numPresupuesto": this.numPresupuesto,
     }
+    
     if (this.user && this.user.uid){
       this.server.saveConfig(config, this.user.uid).then(result => {
-        this.present.presentToast("Datos guardados correctamente.", 5000, 'danger');
+        this.present.presentToast("Datos guardados correctamente.");
       })
       .catch(e => {
         this.present.presentToast("Error. No se ha podido guardar la configuración.", 5000, 'danger');
@@ -85,6 +85,41 @@ export class Tab3Page implements OnInit {
     } else {
       this.present.presentToast("Error. No se ha podido guardar la configuración.", 5000, 'danger');
     }    
+  }
+
+  validarCampos(){
+    if (!this.nombreEmpresa || this.nombreEmpresa == "") {
+      this.present.presentToast("Error. Debe informarse el nombre de la empresa.", 5000, 'danger');
+      return true;
+    } else if (!this.direccionEmpresa || this.direccionEmpresa == "") {
+      this.present.presentToast("Error. Debe informarse la dirección de la empresa.", 5000, 'danger');
+      return true;
+    } else if (!this.emailEmpresa || this.emailEmpresa == "" || !/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(this.emailEmpresa)) {
+      this.present.presentToast("Error. Debe informarse el correo electronico de la empresa.", 5000, 'danger');
+      return true;
+    } else if (!this.telefonoEmpresa || this.telefonoEmpresa == "" || !/^\(?(\d{3})\)?[- ]?(\d{3})[- ]?(\d{3})$/.test(this.telefonoEmpresa)) {
+      this.present.presentToast("Error. Debe informarse el telefono de la empresa.", 5000, 'danger');
+      return true;
+    } else if (isNaN(this.cpEmpresa) || this.cpEmpresa <= 0) {
+      this.present.presentToast("Error. Debe informarse el codigo postal de la empresa.", 5000, 'danger');
+      return true;
+    } else if (!this.poblacionEmpresa || this.poblacionEmpresa == "") {
+      this.present.presentToast("Error. Debe informarse la población de la empresa.", 5000, 'danger');
+      return true;
+    } else if (!this.provinciaEmpresa || this.provinciaEmpresa == "") {
+      this.present.presentToast("Error. Debe informarse la provincia de la empresa.", 5000, 'danger');
+      return true;
+    } else if (!this.paisEmpresa || this.paisEmpresa == "") {
+      this.present.presentToast("Error. Debe informarse el país de la empresa.", 5000, 'danger');
+      return true;
+    } else if (!this.cifEmpresa || this.cifEmpresa == "") {
+      this.present.presentToast("Error. Debe informarse el CIF de la empresa.", 5000, 'danger');
+      return true;
+    } else if (isNaN(this.iva) && this.iva <= 0) {
+      this.present.presentToast("Error. Debe informarse el IVA de la empresa.", 5000, 'danger');
+      return true;
+    }
+    return false;
   }
 
 }
