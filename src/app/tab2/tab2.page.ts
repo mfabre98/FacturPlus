@@ -69,8 +69,12 @@ export class Tab2Page {
   }
 
   addNewLine(){
-    this.modals.addBudget = true;
-    this.titleModCre = "Añadir";
+    if (this.userConfig && this.userConfig.uId){
+      this.modals.addBudget = true;
+      this.titleModCre = "Añadir";
+    } else {
+      this.present.presentToast("Error. No se ha encontrado ninguna configuración guardada.", 5000, 'danger');
+    }
   }
 
   getNextLineId(){
