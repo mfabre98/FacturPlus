@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { PDFGenerator } from '@awesome-cordova-plugins/pdf-generator/ngx';
 import { PresentService } from '../services/present.service';
 import { ServerService } from '../services/server.service';
@@ -44,7 +44,7 @@ export class Tab2Page {
     if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
       this.isDesktop = false;
     } else{
-      this.isDesktop = true;
+      this.isDesktop = false;
     }
   }
   
@@ -59,7 +59,7 @@ export class Tab2Page {
         let key = Object.keys(data)[0];
         this.userConfig = data[key].empresa;
         this.numPresupuesto = this.userConfig.numPresupuesto ? parseInt(this.userConfig.numPresupuesto) + 1 : 1;
-        this.userConfig.numPresupuesto = parseInt(this.userConfig.numPresupuesto) + 1;
+        this.userConfig.numPresupuesto = this.numPresupuesto
       } else {
         this.present.presentToast("Error. No se ha encontrado ninguna configuración guardada.", 5000, 'danger');
       } 
@@ -101,17 +101,16 @@ export class Tab2Page {
   onAddBudgetSubmit(event: any) {
     if (this.boolConIva){
       let iva = '1.' + this.userConfig.iva
-      this.precioSinIva = parseFloat((this.precioConIva/parseFloat(iva)).toFixed(2))
+      this.precioSinIva = parseFloat((this.precioConIva / parseFloat(iva)).toFixed(2))
     } else {
       let iva = '1.' + this.userConfig.iva
-      this.precioConIva = parseFloat((this.precioConIva/parseFloat(iva)).toFixed(2))
+      this.precioConIva = parseFloat((this.precioSinIva * parseFloat(iva)).toFixed(2))
     }
     
     let error = this.validarCampos()
     if (error) {
       return;
-    }
-    
+    }    
     
     let esEditar = false;
     if (this.id == 0){
@@ -188,14 +187,18 @@ export class Tab2Page {
   }
 
   limpiarLista(){
+    this.mostrarTotales = false;
+    this.precioTotalSinIva = 0;
+    this.precioTotalConIva = 0;
     this.lineasPresupuesto = [];
   }
 
-
   generatePdf(){
-    this.mostrarPdfHtml = true;
     let date = new Date()
-    this.data = date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear();
+    let dia = date.getDate() >= 10 ? date.getDate() : "0" + date.getDate()
+    let mes = (date.getMonth() + 1) >= 10 ? (date.getMonth() + 1) : "0" + (date.getMonth() + 1)
+    this.data = dia + "/" + mes + "/" + date.getFullYear();
+    this.mostrarPdfHtml = true;
   }
 
   async descargarPdf() {
@@ -208,7 +211,6 @@ export class Tab2Page {
     
     this.pdfGenerator.fromData(this.content, options)
       .then(async (base64) => {
-        console.log('OK', base64);
         this.mostrarPdfHtml = false;
         await this.server.saveConfig(this.userConfig, this.user.uid).then(async result => {
           await this.getUserConfig();
@@ -249,7 +251,7 @@ export class Tab2Page {
     if (!this.nombreProducto || this.nombreProducto == "") {
       this.present.presentToast("Error. Debe informarse el nombre del producto.", 5000, 'danger');
       return true;
-    } else if (!this.cantidad || this.cantidad <= 0) {
+    } else if (isNaN(this.cantidad) || this.cantidad <= 0) {
       this.present.presentToast("Error. Debe informarse la cantidad del producto.", 5000, 'danger');
       return true;
     } else if (!this.boolConIva && (!this.precioSinIva || this.precioSinIva <= 0)) {

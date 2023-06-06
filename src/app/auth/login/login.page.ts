@@ -24,6 +24,7 @@ export class LoginPage implements OnInit {
       .then((res) => {
         let r = res
         if(this.authService.isEmailVerified) {
+          this.present.presentToast("Inicio de sesión correcto.");
           window.location.reload();
           this.router.navigate(['factur']);          
         } else {

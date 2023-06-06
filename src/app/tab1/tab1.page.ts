@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { PDFGenerator } from '@awesome-cordova-plugins/pdf-generator/ngx';
 import { AuthenticationService } from "../services/authentication.service";
 import { PresentService } from '../services/present.service';
@@ -65,7 +65,7 @@ export class Tab1Page {
         let key = Object.keys(data)[0];
         this.userConfig = data[key].empresa;
         this.numFactura = this.userConfig.numFactura ? parseInt(this.userConfig.numFactura) + 1 : 1;
-        this.userConfig.numFactura = parseInt(this.userConfig.numFactura) + 1;
+        this.userConfig.numFactura = this.numFactura
       } else {
         this.present.presentToast("Error. No se ha encontrado ninguna configuración guardada.", 5000, 'danger');
       } 
@@ -107,10 +107,10 @@ export class Tab1Page {
   onAddBudgetSubmit(event: any) {
     if (this.boolConIva){
       let iva = '1.' + this.userConfig.iva
-      this.precioSinIva = parseFloat((this.precioConIva/parseFloat(iva)).toFixed(2))
+      this.precioSinIva = parseFloat((this.precioConIva / parseFloat(iva)).toFixed(2))
     } else {
       let iva = '1.' + this.userConfig.iva
-      this.precioConIva = parseFloat((this.precioConIva/parseFloat(iva)).toFixed(2))
+      this.precioConIva = parseFloat((this.precioSinIva * parseFloat(iva)).toFixed(2))
     }
     
     let error = this.validarCampos()
@@ -193,13 +193,18 @@ export class Tab1Page {
   }
 
   limpiarLista(){
+    this.mostrarTotales = false;
+    this.precioTotalSinIva = 0;
+    this.precioTotalConIva = 0;
     this.lineasFactura = [];
   }
 
-  generatePdf(){
-    this.mostrarPdfHtml = true;
+  generatePdf(){    
     let date = new Date()
-    this.data = date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear();
+    let dia = date.getDate() >= 10 ? date.getDate() : "0" + date.getDate()
+    let mes = (date.getMonth() + 1) >= 10 ? (date.getMonth() + 1) : "0" + (date.getMonth() + 1)
+    this.data = dia + "/" + mes + "/" + date.getFullYear();
+    this.mostrarPdfHtml = true;
   }
 
   async descargarPdf() {    
@@ -255,10 +260,10 @@ export class Tab1Page {
     } else if (isNaN(this.cantidad) || this.cantidad <= 0) {
       this.present.presentToast("Error. Debe informarse la cantidad del producto.", 5000, 'danger');
       return true;
-    } else if (!this.boolConIva && this.precioSinIva <= 0) {
+    } else if (!this.boolConIva && (!this.precioSinIva || this.precioSinIva <= 0)) {
       this.present.presentToast("Error. Debe informarse el precio sin IVA del producto.", 5000, 'danger');
       return true;
-    } else if (this.boolConIva && this.precioSinIva <= 0) {
+    } else if (this.boolConIva && (!this.precioSinIva || this.precioSinIva <= 0)) {
       this.present.presentToast("Error. Debe informarse el precio con IVA del producto.", 5000, 'danger');
       return true;
     }

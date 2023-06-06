@@ -18,7 +18,7 @@ export class RegisterPage implements OnInit {
   signUp(email, password){
     this.authService.RegisterUser(email.value, password.value)
     .then((res) => {
-      // Do something here
+      this.present.presentToast("Se ha enviado correo de verificación de cuenta al correo indicado.", 2500);
       this.authService.SendVerificationMail()
       this.router.navigate(['factur/verificar-correo']);
     }).catch((error) => {
