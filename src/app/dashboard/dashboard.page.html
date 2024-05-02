@@ -1,0 +1,47 @@
+<div class="row">
+  <div class="col-md-3 col-lg-4">
+      <div class="card">
+          <div class="card-body bg-white">
+              <div class="d-flex align-items-center">
+                  <div class="btn btn-lg rounded-circle round round-lg fs-6 d-flex align-items-center justify-content-center bg-light-warning text-warning" routerLink="/component/presupuestos">
+                      <i class="bi bi-calculator"></i>
+                  </div>
+                  <div class="ms-3">
+                      <h3 class="mb-0 font-weight-bold">Presupuestos</h3>
+                      <small class="text-muted fs-3">{{num_presupuestos}}</small>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+  <div class="col-md-3 col-lg-4">
+      <div class="card">
+          <div class="card-body bg-white">
+              <div class="d-flex align-items-center">
+                  <div class="btn btn-lg rounded-circle round round-lg fs-6 d-flex align-items-center justify-content-center bg-light-success text-success" routerLink="/component/facturas">
+                      <i class="bi bi-receipt"></i>
+                  </div>
+                  <div class="ms-3">
+                      <h3 class="mb-0 font-weight-bold">Facturas</h3>
+                      <small class="text-muted fs-3">{{num_facturas}}</small>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+  <div class="col-md-3 col-lg-4">
+      <div class="card">
+          <div class="card-body bg-white">
+              <div class="d-flex align-items-center">
+                  <div class="btn btn-lg rounded-circle round round-lg fs-6 d-flex align-items-center justify-content-center bg-light-info text-info" routerLink="/component/configuration">
+                      <i class="bi bi-gear"></i>
+                  </div>
+                  <div class="ms-3">
+                      <h3 class="mb-0 font-weight-bold">Configuración</h3>
+                      <small class="text-muted fs-3">{{existe_configuracion}}</small>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>

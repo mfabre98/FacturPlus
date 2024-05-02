@@ -1,13 +1,12 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
 import { LoginPageRoutingModule } from './login-routing.module';
 
 import { LoginPage } from './login.page';
-import { ExploreContainerComponentModule } from "../../explore-container/explore-container.module";
 
 @NgModule({
     declarations: [LoginPage],
@@ -15,8 +14,7 @@ import { ExploreContainerComponentModule } from "../../explore-container/explore
         CommonModule,
         FormsModule,
         IonicModule,
-        LoginPageRoutingModule,
-        ExploreContainerComponentModule
+        LoginPageRoutingModule
     ]
 })
 export class LoginPageModule {}

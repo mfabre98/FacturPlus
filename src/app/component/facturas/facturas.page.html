@@ -1,0 +1,233 @@
+<div class="row" *ngIf="!mostrarPdfHtml">
+  <div class="col-lg-6">
+    <div class="card">
+      <ion-button (click)="addNewLine()">
+        Añadir producto
+      </ion-button>
+    </div>
+  </div>
+  <div class="col-lg-6" *ngIf="mostrarTotales">
+    <div class="card">
+      <ion-label position="stacked">Precio total sin IVA: {{precioTotalSinIva.toFixed(2)}}</ion-label><br/>
+      <ion-label position="stacked">Precio total con IVA: {{precioTotalConIva.toFixed(2)}}</ion-label>
+    </div>
+  </div>
+
+  <div class="col-12" *ngIf="isDesktop">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title">Presupuestos</h4>
+        <!-- <h5 class="card-subtitle text-muted">Overview of the projects</h5> -->
+        <div class="table-responsive">
+          <table class="table align-middle text-nowrap">
+              <thead>
+                  <tr>
+                      <th class="text-dark font-medium fs-4">Nombre</th>
+                      <th class="text-dark font-medium fs-4">Cantidad</th>
+                      <th class="text-dark font-medium fs-4">Precio sin IVA</th>
+                      <th class="text-dark font-medium fs-4">Precio con IVA</th>
+                      <th class="text-dark font-medium fs-4">Editar producto</th>
+                      <th class="text-dark font-medium fs-4">Eliminar producto</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  <tr *ngFor='let linea of lineasFactura'>
+                      <td class="fs-4">{{linea.nombreProducto}}</td>
+                      <td class="fs-4">{{linea.cantidad}}</td>
+                      <td class="fs-4">{{linea.precioSinIva}}€</td>
+                      <td class="fs-4">{{linea.precioConIva}}€</td>
+                      <td class="fs-4">
+                        <ion-button (click)="editLine(linea.id)">
+                          <ion-icon name="pencil-outline"></ion-icon>
+                        </ion-button>
+                      </td>
+                      <td class="fs-4">
+                        <ion-button (click)="removeLine(linea.id)">
+                          <ion-icon name="trash-outline"></ion-icon>
+                        </ion-button>
+                      </td>
+
+                  </tr>              
+              </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-12" style="max-height: 400px; overflow: auto;" *ngIf="!isDesktop">
+    <div class="card">
+      <ion-accordion-group expand="inset">
+        <ion-accordion *ngFor="let linea of lineasFactura" [value]="linea.id">
+            <ion-item slot="header" color="light">
+                <ion-label>{{linea.nombreProducto}}</ion-label>
+            </ion-item>
+            <ion-item slot="content" style="margin: 5px;">
+                <div style="width: 250px; height: 150px;">
+                    <ion-label position="stacked" style="font-size: 20px;">Cantidad: {{linea.cantidad}}</ion-label>
+                    <ion-label position="stacked" style="font-size: 20px;">Precio sin IVA: {{linea.precioSinIva}}€</ion-label>
+                    <ion-label position="stacked" style="font-size: 20px; margin-bottom: 10px;">Precio con IVA: {{linea.precioConIva}}€</ion-label>
+                    <ion-button (click)="editLine(linea.id)">
+                        <ion-icon name="pencil-outline"></ion-icon>
+                    </ion-button>
+                    <ion-button (click)="removeLine(linea.id)">
+                        <ion-icon name="trash-outline"></ion-icon>
+                    </ion-button>
+                </div>
+            </ion-item>
+        </ion-accordion>
+      </ion-accordion-group>
+    </div>
+  </div>
+
+  <div class="col-lg-12">
+    <ion-button (click)="generatePdf()" *ngIf="isDesktop && lineasFactura.length >= 1">
+      Generar Factura
+    </ion-button>
+
+    <ion-button title="Limpiar lista" (click)="limpiarLista()" *ngIf="!isDesktop && lineasFactura.length >= 1">
+      <ion-icon name="reload-outline"></ion-icon>
+    </ion-button>
+
+    <ion-button title="Generar PDF" (click)="generatePdf()" *ngIf="!isDesktop && lineasFactura.length >= 1">
+      <ion-icon name="create-outline"></ion-icon>
+    </ion-button>
+  </div>
+</div>
+
+<div class="row" *ngIf="mostrarPdfHtml">
+  <div *ngIf="mostrarPdfHtml" id="PrintInvoice" class="invoice-box"
+    style="max-width: 800px;margin: auto;padding: 30px;border: 1px solid #eee;box-shadow: 0 0 10px rgba(0, 0, 0, .15);font-size: 16px;line-height: 24px;font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;color: #555; background-color: white;">
+    <table cellpadding="0" cellspacing="0" style="width: 100%;line-height: inherit;text-align: left;">
+        <tr class="top">
+          <td colspan="2" style="padding: 5px;vertical-align: top;">
+            <table style="width: 100%;line-height: inherit;text-align: left;">
+              <tr>
+                <td class="title"
+                  style="padding: 5px;vertical-align: top;padding-bottom: 20px;font-size: 45px;line-height: 45px;color: #333;">
+                  <!-- <img src="../../../assets/enappd.png" style="width:100%; max-width:300px;"> -->
+                  {{userConfig.nombreEmpresa}}
+                </td>
+  
+                <td style="padding: 5px;vertical-align: top;text-align: right;padding-bottom: 20px;">
+                  Factura Nº{{numFactura}}<br>
+                  Fecha: {{data}}<br>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+  
+        <tr class="information">
+          <td colspan="2" style="padding: 5px;vertical-align: top;">
+            <table style="width: 100%;line-height: inherit;text-align: left;">
+              <tr>
+                <td style="padding: 5px;vertical-align: top;padding-bottom: 40px;">
+                  CIF: {{userConfig.cifEmpresa}}<br>
+                  Telefono: {{userConfig.telefonoEmpresa}}<br>
+                  Email: {{userConfig.emailEmpresa}}<br>
+                  Dirección:<br>
+                  {{userConfig.direccionEmpresa}}<br>
+                  {{userConfig.poblacionEmpresa}} {{userConfig.cpEmpresa}}, {{userConfig.provinciaEmpresa}},  {{userConfig.paisEmpresa}}
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+  
+        <tr class="heading">
+          <td style="padding: 5px;vertical-align: top;background: #eee;border-bottom: 1px solid #ddd;font-weight: bold;">
+            Nombre
+          </td>
+  
+          <td
+            style="padding: 5px;vertical-align: top;text-align: right;background: #eee;border-bottom: 1px solid #ddd;font-weight: bold;">
+            Cantidad
+          </td>
+  
+          <td
+            style="padding: 5px;vertical-align: top;text-align: right;background: #eee;border-bottom: 1px solid #ddd;font-weight: bold;">
+            Precio sin IVA
+          </td>
+        </tr>
+  
+        <tr *ngFor="let linea of lineasFactura" class="item">
+          <td style="padding: 5px;vertical-align: top;border-bottom: 1px solid #eee;">
+            {{linea.nombreProducto}}
+          </td>
+  
+          <td style="padding: 5px;vertical-align: top;text-align: right;border-bottom: 1px solid #eee;">
+            {{linea.cantidad | number : '1.2-2'}}
+          </td>
+  
+          <td style="padding: 5px;vertical-align: top;text-align: right;border-bottom: 1px solid #eee;">
+            {{linea.precioSinIva | number : '1.2-2'}}€
+          </td>
+        </tr>
+  
+        <tr class="total">
+          <td style="padding: 5px;vertical-align: top;">
+            IVA: {{userConfig.iva}}%
+          </td>
+
+          <td style="padding: 5px;vertical-align: top;">
+            Total sin IVA: {{precioTotalSinIva.toFixed(2)}}€
+          </td>
+  
+          <td style="padding: 5px;vertical-align: top;text-align: right;border-top: 2px solid #eee;font-weight: bold;">
+            Total con IVA: {{precioTotalConIva.toFixed(2)}}€
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <div *ngIf="mostrarPdfHtml" style="margin: auto; max-width: 300px; margin-top: 20px;">
+        <ion-button fill="outline" color="success" (click)="descargarPdf()">Generar</ion-button>
+        <ion-button fill="outline" color="danger" (click)="cancelarDescargaPdf()">Cancelar</ion-button>
+    </div>
+</div>
+
+<ion-modal id="modal_addBudget" trigger="open-modal" [isOpen]="modals.addBudget" (didDismiss)="onWillDismiss($event)">
+  <ng-template>
+      <ion-header>
+          <ion-toolbar>
+          <ion-buttons slot="start">
+              <ion-button (click)="cancel()">
+                  <ion-icon name="close"></ion-icon>
+              </ion-button>
+          </ion-buttons>
+          <ion-title>{{ titleModCre }}</ion-title>
+          </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding">
+          <div class="container">
+              <h2>Producto</h2>
+              <form (ngSubmit)="onAddBudgetSubmit($event)">
+                  <div class="wrapper">
+                      <ion-item>
+                          <ion-label position="stacked">Nombre:</ion-label>
+                          <ion-input id="nombre_producto" name="nombre_producto" [clearInput]="true" placeholder="Nombre" [(ngModel)]="nombreProducto" required="true"></ion-input>
+                      </ion-item>
+                      <ion-item>
+                          <ion-label position="stacked">Cantidad:</ion-label>
+                          <ion-input id="cantidad" name="cantidad" [clearInput]="true" type="number" min="0" placeholder="Cantidad" [(ngModel)]="cantidad" value=0 required="true"></ion-input>
+                      </ion-item>
+                      <ion-item *ngIf="!boolConIva">
+                          <ion-label position="stacked">Precio sin IVA:</ion-label>
+                          <ion-input id="precio_sin_iva" name="precio_sin_iva" [clearInput]="true" type="number" placeholder="Precio" [(ngModel)]="precioSinIva" required="true"></ion-input>
+                      </ion-item>
+                      <ion-item *ngIf="boolConIva">
+                          <ion-label position="stacked">Precio con IVA:</ion-label>
+                          <ion-input id="precio_con_iva" name="precio_con_iva" [clearInput]="true" type="number" placeholder="Precio" [(ngModel)]="precioConIva" required="true"></ion-input>
+                      </ion-item>
+                      <ion-item>
+                          <ion-label position="stacked">Poner precio con IVA:</ion-label>
+                          <ion-toggle [checked]="boolConIva" (ionChange)="onChangeBoolConIva($event)" color="secondary"></ion-toggle>
+                      </ion-item>
+                      <ion-button type="submit" fill="outline">Guardar</ion-button>
+                  </div>
+              </form>
+         </div>
+      </ion-content>
+  </ng-template>
+</ion-modal>

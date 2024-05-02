@@ -19,7 +19,7 @@ export class LoginGuard implements CanActivate {
             if (result){
                 return true;
             } else {
-                this.router.navigate(['/factur']).then(r => {});
+                this.router.navigate(['dashboard']).then(r => {});
                 return false;
             }
             

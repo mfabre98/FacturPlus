@@ -1,0 +1,10 @@
+<ion-tabs *ngIf="!isDesktop">
+
+  <ion-tab-bar slot="bottom">
+    <ion-tab-button *ngFor="let sidebarnavItem of sidebarnavItems" tab="{{sidebarnavItem.tab}}" [routerLink]="sidebarnavItem.class === '' ? [sidebarnavItem.path] : null">
+      <ion-icon aria-hidden="true" name="{{sidebarnavItem.ionIcon}}"></ion-icon>
+      <ion-label>{{sidebarnavItem.title}}</ion-label>
+    </ion-tab-button>
+  </ion-tab-bar>
+
+</ion-tabs>

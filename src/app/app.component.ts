@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { ScreensizeService } from 'src/app/services/screensize.service';
+
 
 @Component({
   selector: 'app-root',
@@ -6,5 +8,14 @@ import { Component } from '@angular/core';
   styleUrls: ['app.component.scss'],
 })
 export class AppComponent {
-  constructor() {}
+  title = 'app';
+  isDesktop: boolean;
+
+  constructor(private screensizeService: ScreensizeService) {
+    this.screensizeService.isDesktopView().subscribe(isDesktop => {
+      if (this.isDesktop && !isDesktop) window.location.reload();
+      this.isDesktop = isDesktop;
+    });
+
+  }
 }

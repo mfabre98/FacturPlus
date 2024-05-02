@@ -1,0 +1,38 @@
+<div *ngIf="selected.length; else placeholder" style="max-width: 300px;">
+  <span *ngFor="let item of selected; let last = last">
+    {{item[itemTextField]}} {{last ? "" : ", "}}
+  </span>
+</div>
+
+<ng-template #placeholder>
+  Selecciona...
+</ng-template>
+
+<ion-modal [isOpen]="isOpen" class="searchableSelectCustom" [enterAnimation]="enterAnimation" [leaveAnimation]="leaveAnimation">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-button (click)="cancel()" color="danger">Cancelar</ion-button>
+        </ion-buttons>
+        <ion-buttons slot="end" *ngIf="multiple">
+          <ion-button (click)="select()" color="success">Seleccionar</ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+      <ion-toolbar>
+        <ion-searchbar animated="true" placeholder="Opción" clear-icon="trash-bin" [(ngModel)]="filterText" (ionChange)="filter($any($event))"></ion-searchbar>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <div class="search-results" infiniteScroll [infiniteScrollDistance]="2" [infiniteScrollThrottle]="500" (scrolled)="onScroll()" [scrollWindow]="false">
+        <div class="data-card" *ngFor="let item of itemsList">
+          <ion-item (click)="itemSelected()">
+            <ion-checkbox slot="start" [(ngModel)]="item.selected"></ion-checkbox>
+            <ion-label>{{ item[itemTextField]}}</ion-label>
+          </ion-item>
+        </div>
+        <div *ngIf="isLoading">Cargando más...</div>
+      </div>
+    </ion-content>
+  </ng-template>
+</ion-modal>

@@ -1,12 +1,11 @@
 import { Injectable } from '@angular/core';
 import * as forge from 'node-forge';
-import { Storage } from '@ionic/storage';
 
 
 @Injectable({
   providedIn: 'root'
 })
-export class UtilsService {
+export class StorageService {
 
   constructor() { }
   // Cookies

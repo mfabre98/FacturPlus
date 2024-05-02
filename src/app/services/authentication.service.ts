@@ -4,7 +4,7 @@ import { User } from '../models/user';
 import { Router } from '@angular/router';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/compat/firestore';
-import { UtilsService } from './storage.service';
+import { StorageService } from './storage.service';
 import { PresentService } from './present.service';
 
 @Injectable({
@@ -13,7 +13,7 @@ import { PresentService } from './present.service';
 export class AuthenticationService {
   userData: any;
   constructor(public afStore: AngularFirestore, public ngFireAuth: AngularFireAuth, public router: Router,
-    public ngZone: NgZone, public storage: UtilsService, public present: PresentService) 
+    public ngZone: NgZone, public storage: StorageService, public present: PresentService) 
   {
     this.ngFireAuth.authState.subscribe((user) => {
       if (user) {
@@ -105,8 +105,8 @@ export class AuthenticationService {
   }
 
   async checkNoLogin() {
-    const user = localStorage.getItem('user');
-    if (user && user != "null"){
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (user && user.emailVerified){
         return true;
     }
     
@@ -114,8 +114,8 @@ export class AuthenticationService {
   }
   
   async checkLogin() {
-    const user = localStorage.getItem('user');
-    if (user && user != "null"){
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (user && user.emailVerified){
         return false;
     }
     
@@ -124,7 +124,7 @@ export class AuthenticationService {
   
   async checkAdmin() {
     const user = JSON.parse(localStorage.getItem('user'));
-    if (user && user != "null"){
+    if (user && user.emailVerified){
       if (!user.email.includes("marcfabre10@gmail.com")){
         return true;
       }        

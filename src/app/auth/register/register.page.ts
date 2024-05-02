@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from "@angular/router";
 import { PresentService } from 'src/app/services/present.service';
 import { AuthenticationService } from "../../services/authentication.service";
+import { StorageService } from 'src/app/services/storage.service';
+declare var anime: any; 
+
 @Component({
   selector: 'app-register',
   templateUrl: './register.page.html',
@@ -14,13 +17,66 @@ export class RegisterPage implements OnInit {
     public present: PresentService
   ) {    
   }
-  ngOnInit(){}
+  ngOnInit(){
+    var current = null;
+    document.querySelector('#email').addEventListener('focus', function(e) {
+      if (current) current.pause();
+      current = anime({
+        targets: 'path',
+        strokeDashoffset: {
+          value: 0,
+          duration: 700,
+          easing: 'easeOutQuart'
+        },
+        strokeDasharray: {
+          value: '240 1386',
+          duration: 700,
+          easing: 'easeOutQuart'
+        }
+      });
+    });
+    document.querySelector('#password').addEventListener('focus', function(e) {
+      if (current) current.pause();
+      current = anime({
+        targets: 'path',
+        strokeDashoffset: {
+          value: -336,
+          duration: 700,
+          easing: 'easeOutQuart'
+        },
+        strokeDasharray: {
+          value: '240 1386',
+          duration: 700,
+          easing: 'easeOutQuart'
+        }
+      });
+    });
+    document.querySelector('#submit').addEventListener('focus', function(e) {
+      if (current) current.pause();
+      current = anime({
+        targets: 'path',
+        strokeDashoffset: {
+          value: -730,
+          duration: 700,
+          easing: 'easeOutQuart'
+        },
+        strokeDasharray: {
+          value: '530 1386',
+          duration: 700,
+          easing: 'easeOutQuart'
+        }
+      });
+    });
+  }
   signUp(email, password){
     this.authService.RegisterUser(email.value, password.value)
     .then((res) => {
       this.present.presentToast("Se ha enviado correo de verificación de cuenta al correo indicado.", 2500);
-      this.authService.SendVerificationMail()
-      this.router.navigate(['factur/verificar-correo']);
+      setTimeout(() => {        
+        StorageService.deleteStorage('user');
+        this.router.navigate(['login']);
+        this.authService.SendVerificationMail()
+      }, 3000);
     }).catch((error) => {
       this.present.presentToast("Error en el registro de usuario.", 5000, 'danger');
       console.log(error.message)
