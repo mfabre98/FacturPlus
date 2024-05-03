@@ -33,7 +33,7 @@
           <input type="email" id="email" #email required>
           <label for="password">Contraseña</label>
           <input type="password" id="password" #password required>
-          <input type="submit" id="submit" value="Registro" style="color: white;" (click)="signUp(email, password)">
+          <input type="submit" id="submit" value="Registro" style="color: white;" (click)="signUp(email, password)" *ngIf="showRegisterButton">
         </div>
       </div>
     </div>
