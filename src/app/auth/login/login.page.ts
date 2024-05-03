@@ -2,6 +2,7 @@ import { Component,OnInit } from '@angular/core';
 import { Router } from "@angular/router";
 import { AuthenticationService } from "../../services/authentication.service";
 import { PresentService } from "../../services/present.service";
+import { StorageService } from 'src/app/services/storage.service';
 declare var anime: any; 
 
 @Component({
@@ -15,9 +16,12 @@ export class LoginPage implements OnInit {
     public router: Router,
     public present: PresentService
   ) {
-    const user = localStorage.getItem('user');
-    if (user){
-      this.router.navigate(['factur']);
+    StorageService.deleteStorage('user');
+    if (!StorageService.readStorage('reload-login-page')){
+      StorageService.saveStorage('reload-login-page', true)
+      window.location.reload();
+    } else {
+      StorageService.deleteStorage('reload-login-page')
     }
   }
   ngOnInit() {

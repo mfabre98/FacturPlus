@@ -11,11 +11,20 @@ declare var anime: any;
   styleUrls: ['./register.page.scss'],
 })
 export class RegisterPage implements OnInit {
+  showRegisterButton = true;
+
   constructor(
     public authService: AuthenticationService,
     public router: Router,
     public present: PresentService
-  ) {    
+  ) {
+    StorageService.deleteStorage('user');
+    if (!StorageService.readStorage('reload-register-page')){
+      StorageService.saveStorage('reload-register-page', true)
+      window.location.reload();
+    } else {
+      StorageService.deleteStorage('reload-register-page')
+    }
   }
   ngOnInit(){
     var current = null;
@@ -68,15 +77,17 @@ export class RegisterPage implements OnInit {
       });
     });
   }
+
   signUp(email, password){
     this.authService.RegisterUser(email.value, password.value)
     .then((res) => {
+      this.showRegisterButton = false;
       this.present.presentToast("Se ha enviado correo de verificación de cuenta al correo indicado.", 2500);
-      setTimeout(() => {        
+      setTimeout(() => {
         StorageService.deleteStorage('user');
         this.router.navigate(['login']);
         this.authService.SendVerificationMail()
-      }, 3000);
+      }, 10000);
     }).catch((error) => {
       this.present.presentToast("Error en el registro de usuario.", 5000, 'danger');
       console.log(error.message)
