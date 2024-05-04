@@ -1,4 +1,4 @@
-import { Component,OnInit } from '@angular/core';
+import { AfterViewInit, Component,OnInit } from '@angular/core';
 import { Router } from "@angular/router";
 import { AuthenticationService } from "../../services/authentication.service";
 import { PresentService } from "../../services/present.service";
@@ -10,13 +10,12 @@ declare var anime: any;
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
 })
-export class LoginPage implements OnInit {
+export class LoginPage implements AfterViewInit {
   constructor(
     public authService: AuthenticationService,
     public router: Router,
     public present: PresentService
   ) {
-    StorageService.deleteStorage('user');
     if (!StorageService.readStorage('reload-login-page')){
       StorageService.saveStorage('reload-login-page', true)
       window.location.reload();
@@ -24,7 +23,7 @@ export class LoginPage implements OnInit {
       StorageService.deleteStorage('reload-login-page')
     }
   }
-  ngOnInit() {
+  ngAfterViewInit() {
     var current = null;
     document.querySelector('#email').addEventListener('focus', function(e) {
       if (current) current.pause();
@@ -89,5 +88,9 @@ export class LoginPage implements OnInit {
       }).catch((error) => {
         window.location.reload();
       })
+  }
+
+  gotoRegister(){
+    this.router.navigate(['/register']);
   }
 }

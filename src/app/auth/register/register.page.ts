@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { Router } from "@angular/router";
 import { PresentService } from 'src/app/services/present.service';
 import { AuthenticationService } from "../../services/authentication.service";
@@ -10,15 +10,14 @@ declare var anime: any;
   templateUrl: './register.page.html',
   styleUrls: ['./register.page.scss'],
 })
-export class RegisterPage implements OnInit {
+export class RegisterPage implements AfterViewInit {
   showRegisterButton = true;
 
   constructor(
     public authService: AuthenticationService,
     public router: Router,
     public present: PresentService
-  ) {
-    StorageService.deleteStorage('user');
+  ) {    
     if (!StorageService.readStorage('reload-register-page')){
       StorageService.saveStorage('reload-register-page', true)
       window.location.reload();
@@ -26,7 +25,7 @@ export class RegisterPage implements OnInit {
       StorageService.deleteStorage('reload-register-page')
     }
   }
-  ngOnInit(){
+  ngAfterViewInit(){
     var current = null;
     document.querySelector('#email').addEventListener('focus', function(e) {
       if (current) current.pause();
@@ -92,5 +91,9 @@ export class RegisterPage implements OnInit {
       this.present.presentToast("Error en el registro de usuario.", 5000, 'danger');
       console.log(error.message)
     })
+  }
+
+  gotoLogin(){
+    this.router.navigate(['/login']);
   }
 }

@@ -4,6 +4,7 @@ import { Router, RouterModule } from "@angular/router";
 import { NgbDropdownModule, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ScreensizeService } from 'src/app/services/screensize.service';
 import { StorageService } from 'src/app/services/storage.service';
+import { AuthenticationService } from "src/app/services/authentication.service";
 
 @Component({
   selector: 'app-header',
@@ -22,11 +23,11 @@ export class HeaderPage implements OnInit {
   tokenIsValid: boolean = false;
   userSession;
   auth2: any;
-  secretKey: string ='AIzaSyCR0qhQ-y47fTeBQnVtCK4Yly5Sp0GH2AM.apps.googleusercontent.com';
+  // secretKey: string ='AIzaSyCR0qhQ-y47fTeBQnVtCK4Yly5Sp0GH2AM.apps.googleusercontent.com';
 
   @ViewChild('loginRef') loginElement!: ElementRef;
 
-  constructor(public router: Router, private modalService: NgbModal, private screensizeService: ScreensizeService) {
+  constructor(public router: Router, private modalService: NgbModal, private screensizeService: ScreensizeService, public authService: AuthenticationService) {
     this.screensizeService.isDesktopView().subscribe(isDesktop => {
       if (this.isDesktop && !isDesktop) window.location.reload();
       this.isDesktop = isDesktop;
@@ -144,9 +145,7 @@ export class HeaderPage implements OnInit {
       this.userSession.username = words[0];
       this.isLoggedIn = true;
     } else {
-      this.isLoggedIn = false;
-      StorageService.deleteStorage('user');
-      this.router.navigate(['login']);
+      this.callLogOut();
     }
   }
 
@@ -248,8 +247,7 @@ export class HeaderPage implements OnInit {
 
   callLogOut() {
     this.isLoggedIn = false;
-    StorageService.deleteStorage('user');
-    this.router.navigate(['login']);
+    this.authService.SignOut();
   }
 
   gotoConfiguration() {

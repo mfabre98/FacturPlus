@@ -13,7 +13,8 @@ export const Approutes: Routes = [
   },
   {
     path: 'register',
-    loadChildren: () => import('./auth/register/register.module').then( m => m.RegisterPageModule)
+    loadChildren: () => import('./auth/register/register.module').then( m => m.RegisterPageModule),
+    canActivate: [LoginGuard]
   },
   {
     path: 'verificar-correo',
