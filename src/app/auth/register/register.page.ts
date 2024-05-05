@@ -3,6 +3,7 @@ import { Router } from "@angular/router";
 import { PresentService } from 'src/app/services/present.service';
 import { AuthenticationService } from "../../services/authentication.service";
 import { StorageService } from 'src/app/services/storage.service';
+declare var $:any;
 declare var anime: any; 
 
 @Component({
@@ -88,8 +89,15 @@ export class RegisterPage implements AfterViewInit {
         this.authService.SendVerificationMail()
       }, 10000);
     }).catch((error) => {
-      this.present.presentToast("Error en el registro de usuario.", 5000, 'danger');
-      console.log(error.message)
+      $("#email").val("");
+      $("#password").val("");
+      if (error.message.includes("(auth/invalid-email)")){
+        this.present.presentToast("Error. No es un correo valido.", 5000, 'danger');
+      } else if (error.message.includes("(auth/email-already-in-use)")){
+        this.present.presentToast("Error. Este correo ya se encuentra registrado.", 5000, 'danger');
+      } else {
+        this.present.presentToast(error.message, 5000, 'danger');
+      }
     })
   }
 

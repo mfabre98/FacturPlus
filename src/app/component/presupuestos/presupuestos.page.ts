@@ -113,8 +113,9 @@ export class NgbdPresupuestosPage implements OnInit {
       let iva = '1.' + this.userConfig.iva
       this.precioSinIva = parseFloat((this.precioConIva / parseFloat(iva)).toFixed(2))
     } else {
-      let iva = '1.' + this.userConfig.iva
-      this.precioConIva = parseFloat((this.precioSinIva * parseFloat(iva)).toFixed(2))
+      let iva = '0.' + this.userConfig.iva
+      let productoIva = parseFloat((this.precioSinIva * parseFloat(iva)).toFixed(2))
+      this.precioConIva = parseFloat((parseFloat((this.precioSinIva).toFixed(2)) + productoIva).toFixed(2))
     }
     
     let error = this.validarCampos()
