@@ -24,7 +24,8 @@ export class NgbdPresupuestosPage implements OnInit {
 
   isDesktop: boolean;
 
-  lineasPresupuesto: Array<any> = []
+  lineasPresupuesto: Array<any> = [];
+  cliente: string = "";
   showAddBudgetForm: boolean = false;
   modals: any = {
     addBudget: false,

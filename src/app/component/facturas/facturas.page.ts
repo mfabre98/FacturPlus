@@ -24,7 +24,8 @@ export class NgbdFacturasPage implements OnInit {
 
   isDesktop: boolean;
 
-  lineasFactura: Array<any> = []
+  lineasFactura: Array<any> = [];
+  cliente: string = "";
   showAddBudgetForm: boolean = false;
   modals: any = {
     addBudget: false,

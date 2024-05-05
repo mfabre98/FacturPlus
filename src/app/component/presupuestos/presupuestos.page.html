@@ -13,6 +13,15 @@
     </div>
   </div>
 
+  <div class="col-lg-12">
+    <div class="card">
+      <ion-item>
+        <ion-label position="stacked">Cliente:</ion-label>
+        <ion-input id="cliente" name="cliente" [clearInput]="true" placeholder="Cliente" [(ngModel)]="cliente" required="true"></ion-input>
+      </ion-item>
+    </div>
+  </div>
+
   <div class="col-12" *ngIf="isDesktop">
     <div class="card">
       <div class="card-body bg-white">
@@ -99,92 +108,93 @@
   <div *ngIf="mostrarPdfHtml" id="PrintInvoice" class="invoice-box"
     style="max-width: 800px;margin: auto;padding: 30px;border: 1px solid #eee;box-shadow: 0 0 10px rgba(0, 0, 0, .15);font-size: 16px;line-height: 24px;font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;color: #555; background-color: white;">
     <table cellpadding="0" cellspacing="0" style="width: 100%;line-height: inherit;text-align: left;">
-        <tr class="top">
-          <td colspan="2" style="padding: 5px;vertical-align: top;">
-            <table style="width: 100%;line-height: inherit;text-align: left;">
-              <tr>
-                <td class="title"
-                  style="padding: 5px;vertical-align: top;padding-bottom: 20px;font-size: 45px;line-height: 45px;color: #333;">
-                  <!-- <img src="../../../assets/enappd.png" style="width:100%; max-width:300px;"> -->
-                  {{userConfig.nombreEmpresa}}
-                </td>
-  
-                <td style="padding: 5px;vertical-align: top;text-align: right;padding-bottom: 20px;">
-                  Presupuesto Nº{{numPresupuesto}}<br>
-                  Fecha: {{data}}<br>
-                </td>
-              </tr>
-            </table>
-          </td>
-        </tr>
-  
-        <tr class="information">
-          <td colspan="2" style="padding: 5px;vertical-align: top;">
-            <table style="width: 100%;line-height: inherit;text-align: left;">
-              <tr>
-                <td style="padding: 5px;vertical-align: top;padding-bottom: 40px;">
-                  CIF: {{userConfig.cifEmpresa}}<br>
-                  Telefono: {{userConfig.telefonoEmpresa}}<br>
-                  Email: {{userConfig.emailEmpresa}}<br>
-                  Dirección:<br>
-                  {{userConfig.direccionEmpresa}}<br>
-                  {{userConfig.poblacionEmpresa}} {{userConfig.cpEmpresa}}, {{userConfig.provinciaEmpresa}},  {{userConfig.paisEmpresa}}
-                </td>
-              </tr>
-            </table>
-          </td>
-        </tr>
-  
-        <tr class="heading">
-          <td style="padding: 5px;vertical-align: top;background: #eee;border-bottom: 1px solid #ddd;font-weight: bold;">
-            Nombre
-          </td>
-  
-          <td
-            style="padding: 5px;vertical-align: top;text-align: right;background: #eee;border-bottom: 1px solid #ddd;font-weight: bold;">
-            Cantidad
-          </td>
-  
-          <td
-            style="padding: 5px;vertical-align: top;text-align: right;background: #eee;border-bottom: 1px solid #ddd;font-weight: bold;">
-            Precio sin IVA
-          </td>
-        </tr>
-  
-        <tr *ngFor="let linea of lineasPresupuesto" class="item">
-          <td style="padding: 5px;vertical-align: top;border-bottom: 1px solid #eee;">
-            {{linea.nombreProducto}}
-          </td>
-  
-          <td style="padding: 5px;vertical-align: top;text-align: right;border-bottom: 1px solid #eee;">
-            {{linea.cantidad | number : '1.2-2'}}
-          </td>
-  
-          <td style="padding: 5px;vertical-align: top;text-align: right;border-bottom: 1px solid #eee;">
-            {{linea.precioSinIva | number : '1.2-2'}}€
-          </td>
-        </tr>
-  
-        <tr class="total">
-          <td style="padding: 5px;vertical-align: top;">
-            IVA: {{userConfig.iva}}%
-          </td>
+      <tr class="top">
+        <td colspan="2" style="padding: 5px;vertical-align: top;">
+          <table style="width: 100%;line-height: inherit;text-align: left;">
+            <tr>
+              <td class="title"
+                style="padding: 5px;vertical-align: top;padding-bottom: 20px;font-size: 45px;line-height: 45px;color: #333;">
+                <!-- <img src="../../../assets/enappd.png" style="width:100%; max-width:300px;"> -->
+                {{userConfig.nombreEmpresa}}
+              </td>
 
-          <td style="padding: 5px;vertical-align: top;">
-            Total sin IVA: {{precioTotalSinIva.toFixed(2)}}€
-          </td>
-  
-          <td style="padding: 5px;vertical-align: top;text-align: right;border-top: 2px solid #eee;font-weight: bold;">
-            Total con IVA: {{precioTotalConIva.toFixed(2)}}€
-          </td>
-        </tr>
-      </table>
-    </div>
+              <td style="padding: 5px;vertical-align: top;text-align: right;padding-bottom: 20px;">
+                Presupuesto Nº{{numPresupuesto}}<br>
+                Fecha: {{data}}<br>
+                Cliente: {{cliente}}<br>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
 
-    <div *ngIf="mostrarPdfHtml" style="margin: auto; max-width: 300px; margin-top: 20px;">
-        <ion-button fill="outline" color="success" (click)="descargarPdf()">Generar</ion-button>
-        <ion-button fill="outline" color="danger" (click)="cancelarDescargaPdf()">Cancelar</ion-button>
-    </div>
+      <tr class="information">
+        <td colspan="2" style="padding: 5px;vertical-align: top;">
+          <table style="width: 100%;line-height: inherit;text-align: left;">
+            <tr>
+              <td style="padding: 5px;vertical-align: top;padding-bottom: 40px;">
+                CIF: {{userConfig.cifEmpresa}}<br>
+                Telefono: {{userConfig.telefonoEmpresa}}<br>
+                Email: {{userConfig.emailEmpresa}}<br>
+                Dirección:<br>
+                {{userConfig.direccionEmpresa}}<br>
+                {{userConfig.poblacionEmpresa}} {{userConfig.cpEmpresa}}, {{userConfig.provinciaEmpresa}},  {{userConfig.paisEmpresa}}
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+
+      <tr class="heading">
+        <td style="padding: 5px;vertical-align: top;background: #eee;border-bottom: 1px solid #ddd;font-weight: bold;">
+          Nombre
+        </td>
+
+        <td
+          style="padding: 5px;vertical-align: top;text-align: right;background: #eee;border-bottom: 1px solid #ddd;font-weight: bold;">
+          Cantidad
+        </td>
+
+        <td
+          style="padding: 5px;vertical-align: top;text-align: right;background: #eee;border-bottom: 1px solid #ddd;font-weight: bold;">
+          Precio sin IVA
+        </td>
+      </tr>
+
+      <tr *ngFor="let linea of lineasPresupuesto" class="item">
+        <td style="padding: 5px;vertical-align: top;border-bottom: 1px solid #eee;">
+          {{linea.nombreProducto}}
+        </td>
+
+        <td style="padding: 5px;vertical-align: top;text-align: right;border-bottom: 1px solid #eee;">
+          {{linea.cantidad | number : '1.2-2'}}
+        </td>
+
+        <td style="padding: 5px;vertical-align: top;text-align: right;border-bottom: 1px solid #eee;">
+          {{linea.precioSinIva | number : '1.2-2'}}€
+        </td>
+      </tr>
+
+      <tr class="total">
+        <td style="padding: 5px;vertical-align: top;">
+          IVA: {{userConfig.iva}}%
+        </td>
+
+        <td style="padding: 5px;vertical-align: top;">
+          Total sin IVA: {{precioTotalSinIva.toFixed(2)}}€
+        </td>
+
+        <td style="padding: 5px;vertical-align: top;text-align: right;border-top: 2px solid #eee;font-weight: bold;">
+          Total con IVA: {{precioTotalConIva.toFixed(2)}}€
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div *ngIf="mostrarPdfHtml" style="margin: auto; max-width: 300px; margin-top: 20px;">
+      <ion-button fill="outline" color="success" (click)="descargarPdf()">Generar</ion-button>
+      <ion-button fill="outline" color="danger" (click)="cancelarDescargaPdf()">Cancelar</ion-button>
+  </div>
 </div>
 
 <ion-modal id="modal_addBudget" trigger="open-modal" [isOpen]="modals.addBudget" (didDismiss)="onWillDismiss($event)">
