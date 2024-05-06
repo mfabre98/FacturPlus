@@ -94,6 +94,8 @@ export class LoginPage implements AfterViewInit {
           this.present.presentToast("Error. No existe ninguna cuenta con ese correo.", 5000, 'danger');
         } else if (error.message.includes("(auth/wrong-password)")){
           this.present.presentToast("Error. Contraseña incorrecta.", 5000, 'danger');
+        } else {
+          this.present.presentToast(error.message, 5000, 'danger');
         }
       })
   }
