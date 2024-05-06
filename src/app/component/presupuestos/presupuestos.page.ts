@@ -54,7 +54,7 @@ export class NgbdPresupuestosPage implements OnInit {
     if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
       this.isDesktop = false;
     } else{
-      this.isDesktop = false;
+      this.isDesktop = true;
     }
   }
   
