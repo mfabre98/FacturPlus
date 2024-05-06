@@ -7,6 +7,9 @@ import { ServerService } from '../../services/server.service';
 import { StorageService } from 'src/app/services/storage.service';
 import { PDFGenerator } from '@awesome-cordova-plugins/pdf-generator/ngx';
 import { AuthenticationService } from "../../services/authentication.service";
+import jspdf from 'jspdf';
+import html2canvas from 'html2canvas';
+declare var $:any;
 
 @Component({
   selector: 'app-ngbd-presupuestos',
@@ -50,7 +53,7 @@ export class NgbdPresupuestosPage implements OnInit {
   content: string;
   numPresupuesto: number = 0;
 
-  constructor(public present: PresentService, private server: ServerService, private pdfGenerator: PDFGenerator) {
+  constructor(public authService: AuthenticationService, public present: PresentService, private server: ServerService, private pdfGenerator: PDFGenerator) {
     if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
       this.isDesktop = false;
     } else{
@@ -213,30 +216,53 @@ export class NgbdPresupuestosPage implements OnInit {
   }
 
   async descargarPdf() {
+    if(this.isDesktop){
+      this.descargarPdfWindows();
+    } else {
+      this.descargarPdfAndroid();
+    }    
+  }
+
+  async descargarPdfWindows() {
+    var data = document.getElementById('PrintInvoice');
+    html2canvas(data, {scale: 2}).then((canvas) => {
+      // Few necessary setting options
+      let pdf = new jspdf();
+      var position = 0;
+      var imgWidth = 208;
+      var pageHeight = 295;
+      var imgHeight = canvas.height * imgWidth / canvas.width;
+      var heightLeft = imgHeight;
+      pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, position, imgWidth, imgHeight)
+      pdf.save('Presupuesto Nº ' + this.userConfig.numPresupuesto + '.pdf'); // Generated PDF
+    });
+  }
+
+  async descargarPdfAndroid(){
     this.content = document.getElementById('PrintInvoice').innerHTML;
     let options = {
       documentSize: 'A4',
       type: 'share',
-      fileName: 'Factura.pdf'
+      fileName: 'Presupuesto Nº ' + this.userConfig.numPresupuesto + '.pdf'
     };
     
     this.pdfGenerator.fromData(this.content, options)
-      .then(async (base64) => {
-        this.mostrarPdfHtml = false;
-        await this.server.saveConfig(this.userConfig, this.user.uid).then(async result => {
-          await this.getUserConfig();
-        }).catch(e => {
-          console.log(e)
-        });
-      }).catch((error) => {
-        if (error == "cordova_not_available") {
-          this.present.presentToast("Error generando el PDF, intentas ejecutar una funcionalidad solo soportada en Android.", 5000, 'danger');
-        } else {
-          this.present.presentToast("Error generando el PDF, por favor contacte a un administrador.", 5000, 'danger');
-        }
-        console.log('error', error);
-        
+    .then(async (base64) => {
+      this.mostrarPdfHtml = false;
+      await this.server.saveConfig(this.userConfig, this.user.uid).then(async result => {
+        await this.getUserConfig();
+      }).catch(e => {
+        console.log(e)
       });
+    }).catch((error) => {
+      if (error == "cordova_not_available") {
+        this.present.presentToast("Error generando el PDF, intentas ejecutar una funcionalidad solo soportada en Android.", 5000, 'danger');
+      } else {
+        this.present.presentToast("Error generando el PDF, por favor contacte a un administrador.", 5000, 'danger');
+      }
+      console.log('error', error);
+      
+    });
   }
 
   cancelarDescargaPdf(){
