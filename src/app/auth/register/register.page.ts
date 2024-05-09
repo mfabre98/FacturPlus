@@ -79,26 +79,30 @@ export class RegisterPage implements AfterViewInit {
   }
 
   signUp(email, password){
-    this.authService.RegisterUser(email.value, password.value)
-    .then((res) => {
-      this.showRegisterButton = false;
-      this.present.presentToast("Se ha enviado correo de verificación de cuenta al correo indicado.", 2500);
-      setTimeout(() => {
-        StorageService.deleteStorage('user');
-        this.router.navigate(['login']);
-        this.authService.SendVerificationMail()
-      }, 10000);
-    }).catch((error) => {
-      $("#email").val("");
-      $("#password").val("");
-      if (error.message.includes("(auth/invalid-email)")){
-        this.present.presentToast("Error. No es un correo valido.", 5000, 'danger');
-      } else if (error.message.includes("(auth/email-already-in-use)")){
-        this.present.presentToast("Error. Este correo ya se encuentra registrado.", 5000, 'danger');
-      } else {
-        this.present.presentToast(error.message, 5000, 'danger');
-      }
-    })
+    if (email.value && email.value != "" && password.value && password.value != ""){
+      this.authService.RegisterUser(email.value, password.value)
+      .then((res) => {
+        this.showRegisterButton = false;
+        this.present.presentToast("Se ha enviado correo de verificación de cuenta al correo indicado.", 2500);
+        setTimeout(() => {
+          StorageService.deleteStorage('user');
+          this.router.navigate(['login']);
+          this.authService.SendVerificationMail()
+        }, 10000);
+      }).catch((error) => {
+        $("#email").val("");
+        $("#password").val("");
+        if (error.message.includes("(auth/invalid-email)")){
+          this.present.presentToast("Error. No es un correo valido.", 5000, 'danger');
+        } else if (error.message.includes("(auth/email-already-in-use)")){
+          this.present.presentToast("Error. Este correo ya se encuentra registrado.", 5000, 'danger');
+        } else {
+          this.present.presentToast(error.message, 5000, 'danger');
+        }
+      });
+    } else {
+      this.present.presentToast("Error. Se debe indicar usuario y contraseña.", 5000, 'danger');
+    }
   }
 
   gotoLogin(){

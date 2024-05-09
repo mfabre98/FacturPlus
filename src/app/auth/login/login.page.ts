@@ -76,28 +76,32 @@ export class LoginPage implements AfterViewInit {
     });
   }
   logIn(email, password) {
-    this.authService.SignIn(email.value, password.value)
-      .then((res) => {
-        if(this.authService.isEmailVerified) {
-          this.present.presentToast("Inicio de sesión correcto.");
-          this.router.navigate(['dashboard']);          
-        } else {
-          this.present.presentToast("Error. Correo no verificado.", 5000, 'danger');
-          return false;
-        }
-      }).catch((error) => {
-        $("#email").val("");
-        $("#password").val("");
-        if (error.message.includes("(auth/invalid-email)")){
-          this.present.presentToast("Error. No es un correo valido.", 5000, 'danger');
-        } else if (error.message.includes("(auth/user-not-found)")){
-          this.present.presentToast("Error. No existe ninguna cuenta con ese correo.", 5000, 'danger');
-        } else if (error.message.includes("(auth/wrong-password)")){
-          this.present.presentToast("Error. Contraseña incorrecta.", 5000, 'danger');
-        } else {
-          this.present.presentToast(error.message, 5000, 'danger');
-        }
-      })
+    if (email.value && email.value != "" && password.value && password.value != ""){
+      this.authService.SignIn(email.value, password.value)
+        .then((res) => {
+          if(this.authService.isEmailVerified) {
+            this.present.presentToast("Inicio de sesión correcto.");
+            this.router.navigate(['dashboard']);          
+          } else {
+            this.present.presentToast("Error. Correo no verificado.", 5000, 'danger');
+            return false;
+          }
+        }).catch((error) => {
+          $("#email").val("");
+          $("#password").val("");
+          if (error.message.includes("(auth/invalid-email)")){
+            this.present.presentToast("Error. No es un correo valido.", 5000, 'danger');
+          } else if (error.message.includes("(auth/user-not-found)")){
+            this.present.presentToast("Error. No existe ninguna cuenta con ese correo.", 5000, 'danger');
+          } else if (error.message.includes("(auth/wrong-password)")){
+            this.present.presentToast("Error. Contraseña incorrecta.", 5000, 'danger');
+          } else {
+            this.present.presentToast(error.message, 5000, 'danger');
+          }
+        });
+    } else {
+      this.present.presentToast("Error. Se debe indicar usuario y contraseña.", 5000, 'danger');
+    }
   }
 
   gotoRegister(){
